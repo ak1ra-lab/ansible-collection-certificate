@@ -78,8 +78,9 @@ the temporary local-checkout bridge in
 [CONTRIBUTING.md](CONTRIBUTING.md#temporary-local-bridge-for-the-unpublished-general-collection)
 applies.
 
-Molecule scenarios live under `extensions/molecule/` and need a rootful Podman
-or Docker daemon. They are run separately from the lint/sanity gates. See
+Molecule scenarios are flat under `extensions/molecule/`, each one owns its
+containers, and the suite needs Podman (rootless locally; CI uses rootful) or
+Docker. They are run separately from the lint/sanity gates. See
 [CONTRIBUTING.md](CONTRIBUTING.md) for the full workflow and scenario list.
 
 ## License
