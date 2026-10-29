@@ -3,5 +3,23 @@
 # local fake acme-dns API.  No certificate is issued; the hook is invoked
 # directly with the environment certbot would provide.
 #
-# The scenario inherits the shared test sequence from
-# extensions/molecule/config.yml.
+# The hook invocation is a side effect between idempotence and verify;
+# verify.yml only asserts the rendered credentials and hook.
+
+ansible:
+  playbooks:
+    side_effect: side_effect.yml
+
+scenario:
+  test_sequence:
+    - dependency
+    - destroy
+    - create
+    - prepare
+    - converge
+    - idempotence
+    - side_effect
+    - verify
+    - cleanup
+    - verify absent-verify.yml
+    - destroy

@@ -1,7 +1,7 @@
 ---
-# default scenario - remove the shared test containers.
+# Destroy this scenario's containers.
 
-- name: destroy the shared test containers
+- name: destroy the scenario test containers
   hosts: localhost
   gather_facts: false
   vars:

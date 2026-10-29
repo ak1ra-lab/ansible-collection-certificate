@@ -1,13 +1,12 @@
 ---
-# default scenario - lifecycle manager for the shared test containers.
+# Create this scenario's containers.
 #
-# With shared_state enabled, only this scenario runs create/destroy; every
-# component scenario reuses these containers.  The containers are ordinary
-# Ansible managed nodes: the inventory carries the connection details (and
-# the image), this playbook instantiates them on the configured runtime
-# (MOLECULE_CONTAINER_RUNTIME - see inventory/group_vars/test_resources.yml).
+# The inventory (extensions/molecule/inventory/) defines the supported
+# Debian images.  inventory/hosts.yml derives a container name from the
+# scenario name and the checkout, so every scenario (and every parallel
+# checkout on one host) gets an isolated set of containers.
 
-- name: create the shared test containers
+- name: create the scenario test containers
   hosts: localhost
   gather_facts: false
   vars:

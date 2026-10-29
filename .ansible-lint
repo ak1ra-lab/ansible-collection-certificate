@@ -13,6 +13,9 @@ exclude_paths:
   - changelogs/
   - docs/
   - site/
+  # An ansible-galaxy role requirements file, not a playbook.  Molecule's
+  # dependency action reads it; the scenarios have no standalone role deps.
+  - extensions/molecule/shared/roles-requirements.yml
 
 skip_list:
   - name[casing]

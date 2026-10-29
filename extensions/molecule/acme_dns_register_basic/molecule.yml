@@ -3,5 +3,15 @@
 # validation domain against a fake API on localhost.  No Cloudflare token is
 # used, so the manual CNAME prompt is disabled.
 #
-# The scenario inherits the shared test sequence from
-# extensions/molecule/config.yml.
+# The role runs entirely on the controller, so this scenario does not create
+# managed-node containers and its sequence has no create/destroy steps.
+
+scenario:
+  test_sequence:
+    - dependency
+    - prepare
+    - converge
+    - idempotence
+    - verify
+    - cleanup
+    - verify absent-verify.yml

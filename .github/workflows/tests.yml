@@ -220,3 +220,45 @@ jobs:
           uv run --no-sync tox
           -e ${{ matrix.test }}-py3.13-${{ matrix.ansible }}
           --ansible
+
+  molecule:
+    name: Molecule
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Check out the unpublished general collection
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: ak1ra-lab/ansible-collection-general
+          ref: reorg/collections-2026-10
+          path: .deps/ansible-collection-general
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.13"
+      - name: Install uv
+        uses: astral-sh/setup-uv@18d369b23da25a81e9458561248e1aafff6a70fa # v10.3.1
+      - name: Sync the Molecule dependencies
+        run: uv sync --locked --no-dev --group molecule
+      - name: Install Podman
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y podman
+      # Temporary bridge until ak1ra_lab.general 0.4.0 is published: the
+      # prerun resolver must find general locally instead of asking Galaxy.
+      # Molecule installs the collection under test and
+      # tests/molecule/requirements.yml itself.
+      - name: Bootstrap the unpublished general dependency
+        run: |
+          mkdir -p .ansible/collections
+          uv run --no-sync ansible-galaxy collection install \
+            --no-deps -p .ansible/collections .deps/ansible-collection-general
+      - name: Run the Molecule scenarios
+        run: >-
+          sudo env "PATH=${GITHUB_WORKSPACE}/.venv/bin:${PATH}"
+          molecule test --all

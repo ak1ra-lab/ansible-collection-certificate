@@ -2,27 +2,21 @@
 
 ## Setup
 
-Prerequisites: `uv`, a rootful Podman daemon (or a rootful Docker daemon),
+Prerequisites: `uv`, a Podman daemon (rootless is enough locally; CI uses rootful),
 and `go` on the controller for the `acme_dns` role's `go_build` dependency.
 
 ```shell
-uv sync --group dev
-mkdir -p .ansible/collections
-uv run ansible-galaxy collection install --force --no-deps -p .ansible/collections .
-uv run ansible-galaxy collection install --no-deps -p .ansible/collections \
-  ak1ra_lab.general community.general kubernetes.core
+just sync
+just ansible-collection-install
 ```
 
 The collection under test depends on `ak1ra_lab.general`, which is not on
-Galaxy before the `0.4.0` release. Install it from the sibling checkout into
-the same project-local path until then (this is only for lint, docs, and
-manual Molecule runs; the tox-ansible harness installs the collection
-editable itself):
-
-```shell
-uv run ansible-galaxy collection install --no-deps -p .ansible/collections \
-  ../ansible-collection-general
-```
+Galaxy before the `0.4.0` release. The install recipe copies it from the
+sibling checkout (`GENERAL_COLLECTION`, default
+`../ansible-collection-general`) into `.ansible/collections` with `--no-deps`
+so lint, mypy, docs, and standalone Molecule can resolve it. This copy is a
+temporary bridge until general is published; tox-ansible/ade still cannot
+resolve the dependency from Galaxy.
 
 The repository's `ansible.cfg` pins `roles_path=./roles` and
 `collections_path=./.ansible/collections`; it does not read user-level or
@@ -81,11 +75,13 @@ ansible-lint, `ansible-test sanity` and the relevant Molecule scenarios.
 
 ## Testing with Molecule
 
-Molecule scenarios live under `extensions/molecule/` (collection-testing
-layout). The `default` scenario owns the shared container lifecycle
-(`shared_state: true`); the flat component scenarios reuse the same
-containers and each run prepare, converge, idempotence, verify, the scenario
-teardown, and a teardown verification.
+Molecule scenarios live flat under `extensions/molecule/<name>/`. Each
+container-backed scenario owns its containers: the shared
+`create.yml`/`destroy.yml` playbooks build names from the scenario name and a
+checkout hash, so scenarios and parallel checkouts cannot collide. There is no
+shared `default` lifecycle scenario and no `shared_state`.
+`acme_dns_register_basic` and `cert_manager_render` run entirely on the
+controller and create no containers.
 
 | Scenario | Coverage |
 | --- | --- |
@@ -99,30 +95,34 @@ The managed nodes are the Debian 12/13 systemd images from
 [ak1ra-lab/docker-systemd](https://github.com/ak1ra-lab/docker-systemd).
 
 ```shell
-# First run only: install the collection under test and its dependencies.
-# --no-deps avoids resolving the not-yet-published ak1ra_lab.general 0.4.0
-# from Galaxy; install general from its checkout as shown above.
-uv run ansible-galaxy collection install --force --no-deps -p .ansible/collections .
-uv run ansible-galaxy collection install --no-deps -p .ansible/collections \
-  community.general kubernetes.core containers.podman community.docker
-
-# The shared lifecycle scenario and the flat component scenarios.
-uv run molecule test --all
-uv run molecule test -s certbot_pypi
-uv run molecule list
+just sync
+just ansible-collection-install   # lint/mypy/docs only, not Molecule
+just molecule-test                # every scenario
+just molecule-test-one certbot_pypi
+just molecule-syntax
+just molecule-list
 ```
 
-Podman is required. The CI runs it rootful because every container runs
-privileged and systemd needs the capabilities. A rootful Docker daemon is
-supported as an alternative; set `MOLECULE_CONTAINER_RUNTIME=docker` for every
-molecule invocation. The controller additionally needs `go` (the `acme_dns`
-role builds its binary through `ak1ra_lab.general.go_build`) and `uv` (the
-`certbot_pypi` scenario composes `pyproject_install`).
+Molecule's dependency action installs `tests/molecule/requirements.yml`;
+ansible-compat's prerun installs the collection under test and its `galaxy.yml`
+dependencies. Do not pre-install the collection or test collections into
+`.ansible/collections` for Molecule.
 
-When invoking `molecule` directly, reinstall the collection after editing a
-role or the scenario tests the previously installed copy. Molecule caches
-scenario state, so a changed `molecule.yml` needs `molecule reset` (or
-`destroy`).
+Until `ak1ra_lab.general 0.4.0` is published, the prerun resolver needs a
+local copy of general. `just ansible-collection-install` installs it from the
+sibling checkout (`GENERAL_COLLECTION`, default `../ansible-collection-general`)
+into `.ansible/collections`; CI checks out the branch instead. Once general is
+on Galaxy this bootstrap goes away.
+
+Podman is required. Rootless Podman works for the certificate scenarios; CI
+uses rootful Podman for a uniform systemd container runtime. A Docker daemon
+is supported as an alternative; set `MOLECULE_CONTAINER_RUNTIME=docker` for
+every molecule invocation. The controller additionally needs `go` (the
+`acme_dns` role builds its binary through `ak1ra_lab.general.go_build`) and
+`uv` (the `certbot_pypi` scenario composes `pyproject_install`).
+
+Molecule caches scenario state, so a changed `molecule.yml` needs
+`molecule reset` (or `destroy`).
 
 ## Changelog
 

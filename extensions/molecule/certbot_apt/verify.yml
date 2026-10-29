@@ -103,56 +103,6 @@
         fail_msg: "the deploy renewal hook was not rendered correctly"
         quiet: true
 
-    - name: clear the deploy hook log
-      ansible.builtin.file:
-        path: /tmp/molecule-ak1ra-certificate-certbot-pebble/hooks.log
-        state: absent
-
-    - name: run the deploy hook for the managed lineage
-      ansible.builtin.command:
-        argv: [/etc/letsencrypt/renewal-hooks/deploy/certbot-deploy-hooks.sh]
-      environment:
-        RENEWED_LINEAGE: /etc/letsencrypt/live/molecule-certbot.test
-      changed_when: false
-
-    - name: read the deploy hook log for the managed lineage
-      ansible.builtin.slurp:
-        src: /tmp/molecule-ak1ra-certificate-certbot-pebble/hooks.log
-      register: _certbot_verify_hook_log
-
-    - name: assert both global and per-cert hooks ran
-      ansible.builtin.assert:
-        that:
-          - "'global' in (_certbot_verify_hook_log.content | b64decode)"
-          - "'per-cert' in (_certbot_verify_hook_log.content | b64decode)"
-        fail_msg: "the global and per-certificate hooks did not both run"
-        quiet: true
-
-    - name: clear the deploy hook log again
-      ansible.builtin.file:
-        path: /tmp/molecule-ak1ra-certificate-certbot-pebble/hooks.log
-        state: absent
-
-    - name: run the deploy hook for an unrelated lineage
-      ansible.builtin.command:
-        argv: [/etc/letsencrypt/renewal-hooks/deploy/certbot-deploy-hooks.sh]
-      environment:
-        RENEWED_LINEAGE: /etc/letsencrypt/live/unrelated.test
-      changed_when: false
-
-    - name: read the deploy hook log for the unrelated lineage
-      ansible.builtin.slurp:
-        src: /tmp/molecule-ak1ra-certificate-certbot-pebble/hooks.log
-      register: _certbot_verify_hook_log_unrelated
-
-    - name: assert only the global hook ran for an unrelated lineage
-      ansible.builtin.assert:
-        that:
-          - "'global' in (_certbot_verify_hook_log_unrelated.content | b64decode)"
-          - "'per-cert' not in (_certbot_verify_hook_log_unrelated.content | b64decode)"
-        fail_msg: "the per-certificate hook ran for an unrelated lineage"
-        quiet: true
-
     - name: read the certbot timer state
       ansible.builtin.command:
         argv: [systemctl, is-enabled, certbot.timer]

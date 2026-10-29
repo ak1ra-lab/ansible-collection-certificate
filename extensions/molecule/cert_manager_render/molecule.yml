@@ -3,5 +3,15 @@
 # without a Kubernetes cluster.  The scenario verifies the generated
 # Secrets and ClusterIssuers; applying them is left to a real cluster.
 #
-# The scenario inherits the shared test sequence from
-# extensions/molecule/config.yml.
+# The role renders on the controller, so this scenario does not create
+# managed-node containers and its sequence has no create/destroy steps.
+
+scenario:
+  test_sequence:
+    - dependency
+    - prepare
+    - converge
+    - idempotence
+    - verify
+    - cleanup
+    - verify absent-verify.yml

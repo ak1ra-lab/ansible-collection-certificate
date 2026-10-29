@@ -3,5 +3,23 @@
 # the local Pebble ACME server via HTTP-01/standalone with EAB, and verify the
 # renewal configuration, per-lineage deploy hook dispatch and systemd timer.
 #
-# The scenario inherits the shared test sequence from
-# extensions/molecule/config.yml.
+# The deploy hook invocation is a side effect between idempotence and verify;
+# verify.yml only asserts converged state.
+
+ansible:
+  playbooks:
+    side_effect: side_effect.yml
+
+scenario:
+  test_sequence:
+    - dependency
+    - destroy
+    - create
+    - prepare
+    - converge
+    - idempotence
+    - side_effect
+    - verify
+    - cleanup
+    - verify absent-verify.yml
+    - destroy

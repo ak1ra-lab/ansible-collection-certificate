@@ -67,13 +67,20 @@ with the dependency removed. Never publish or commit that modification.
 
 Scenarios are flat under `extensions/molecule/`:
 `acme_dns_register_basic`, `certbot_apt`, `certbot_pypi`, `certbot_acmedns`,
-and `cert_manager_render`. The current layout still uses the shared
-`default` lifecycle scenario (`shared_state: true`); WP-6 replaces it with
-per-scenario isolation. Do not add `MOLECULE_GLOB` to new tooling.
+and `cert_manager_render`. Each container-backed scenario owns its containers
+through the shared `create.yml`/`destroy.yml` playbooks; container names
+include the scenario name and a checkout hash. `acme_dns_register_basic` and
+`cert_manager_render` are controller-only and create none. There is no shared
+`default` lifecycle scenario, no `shared_state`, and no `MOLECULE_GLOB`.
+
+Molecule's dependency action installs `tests/molecule/requirements.yml` and
+ansible-compat's prerun installs the collection under test. Do not pre-install
+the test collections or the collection under test for Molecule. The
+`just ansible-collection-install` recipe remains for lint/mypy/docs and copies
+the unpublished general checkout as a temporary resolver bridge.
 
 Molecule caches scenario state, so a changed `molecule.yml` needs
-`molecule reset` (or `destroy`). After editing a role, reinstall the
-collection into `.ansible/collections` before running a scenario.
+`molecule reset` (or `destroy`).
 
 ## Packaging
 
