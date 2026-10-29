@@ -2,11 +2,11 @@
 # Shared Molecule configuration for every scenario of this collection.
 #
 # Layout follows the official collection-testing guide: scenarios live under
-# extensions/molecule/<name>/, this base file is deep-merged into every
-# scenario's molecule.yml, and `shared_state: true` makes the `default`
-# scenario the single lifecycle manager for all test containers (create
-# once, destroy once) while the component scenarios only prepare, converge,
-# verify and clean up.
+# extensions/molecule/<name>/ (flat names in this collection), this base file
+# is deep-merged into every scenario's molecule.yml, and `shared_state: true`
+# makes the `default` scenario the single lifecycle manager for all test
+# containers (create once, destroy once) while the component scenarios only
+# prepare, converge, verify and clean up.
 #
 # Every scenario shares one inventory (extensions/molecule/inventory/) that
 # declares the supported managed nodes; see inventory/hosts.yml.
@@ -14,7 +14,7 @@
 # The collection under test and its galaxy.yml dependencies are installed
 # automatically by ansible-compat's prerun before each component scenario.
 # The default scenario's create/destroy run earlier than that, so the
-# collections their playbooks use (requirements.yaml) must already be
+# collections their playbooks use (requirements.yml) must already be
 # installed on the control node; the dependency action is disabled to avoid
 # a second, redundant install.
 
