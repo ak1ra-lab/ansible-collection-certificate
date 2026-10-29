@@ -1,5 +1,9 @@
 # acme_dns
 
+> The canonical variable reference for this role is
+> [`meta/argument_specs.yml`](meta/argument_specs.yml). This README keeps the
+> narrative and deployed-artifact details; update both when the contract changes.
+
 Deploys an [acme-dns](https://github.com/acme-dns/acme-dns) server: a limited DNS
 server with a RESTful HTTP API for handling ACME DNS-01 challenges.
 

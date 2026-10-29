@@ -1,5 +1,9 @@
 # certbot
 
+> The canonical variable reference for this role is
+> [`meta/argument_specs.yml`](meta/argument_specs.yml). This README keeps the
+> narrative and deployed-artifact details; update both when the contract changes.
+
 Obtain and renew TLS certificates with [certbot](https://certbot.eff.org/) on a
 systemd host. DNS-01 is the primary challenge type; HTTP-01 is available for
 hosts without DNS API access.

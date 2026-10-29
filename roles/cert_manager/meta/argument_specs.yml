@@ -1,0 +1,91 @@
+argument_specs:
+  main:
+    short_description: Manage cert-manager and ACME ClusterIssuers
+    description:
+      - Optionally install or upgrade cert-manager from the official release manifest, then declare ACME ClusterIssuers and
+        their solver or EAB credentials.
+    options:
+      cert_manager_delegate_to:
+        description: Host that runs the Kubernetes modules. The kubeconfig must be readable there.
+        type: str
+        default: localhost
+        required: false
+      cert_manager_kubeconfig:
+        description: Explicit kubeconfig path. Empty uses KUBECONFIG or ~/.kube/config.
+        type: str
+        default: ''
+        required: false
+      cert_manager_context:
+        description: Optional kubeconfig context.
+        type: str
+        default: ''
+        required: false
+      cert_manager_install:
+        description: Apply the cert-manager release manifest. Leave false when Helm, Flux, or Argo CD owns cert-manager.
+        type: bool
+        default: false
+        required: false
+      cert_manager_version:
+        description: cert-manager release to install, for example v1.21.2. Empty resolves the latest stable release.
+        type: str
+        default: ''
+        required: false
+      cert_manager_manifest_url:
+        description: Release manifest URL override for a mirror or air-gapped environment.
+        type: str
+        default: ''
+        required: false
+      cert_manager_manifest_checksum:
+        description: Optional checksum for the release manifest. Empty uses the GitHub asset digest when available.
+        type: str
+        default: ''
+        required: false
+      cert_manager_github_token:
+        description: Optional GitHub API token used to resolve the release and avoid rate limits.
+        type: str
+        default: ''
+        required: false
+        no_log: true
+      cert_manager_manifest_cache_dir:
+        description: Manifest cache directory on the delegate host.
+        type: str
+        default: '{{ lookup(''ansible.builtin.env'', ''HOME'') }}/.cache/cert-manager'
+        required: false
+      cert_manager_install_wait:
+        description: Wait for the cert-manager webhook deployment and ClusterIssuer CRD after installation.
+        type: bool
+        default: true
+        required: false
+      cert_manager_namespace:
+        description: Namespace the cert-manager controller runs in.
+        type: str
+        default: cert-manager
+        required: false
+      cert_manager_cluster_resource_namespace:
+        description: Namespace cert-manager resolves ClusterIssuer secret references in.
+        type: str
+        default: '{{ cert_manager_namespace }}'
+        required: false
+      cert_manager_apply:
+        description: Apply the managed solver and EAB secrets and the ClusterIssuers to the cluster.
+        type: bool
+        default: true
+        required: false
+      cert_manager_manifest_dir:
+        description: Optional absolute directory on the delegate host for rendered manifests. The directory is 0700 because
+          Secret manifests are written there.
+        type: str
+        default: ''
+        required: false
+      cert_manager_acme_email:
+        description: Default ACME contact email. Individual issuers can override it.
+        type: str
+        default: ''
+        required: false
+      cert_manager_cluster_issuers:
+        description: ClusterIssuer definitions. Each entry needs name, server, and exactly one solver (cloudflare or http01);
+          eab is optional.
+        type: list
+        default: []
+        required: false
+        no_log: true

@@ -1,0 +1,274 @@
+argument_specs:
+  main:
+    short_description: Obtain and renew certificates with certbot
+    description:
+      - Install or use an existing certbot, obtain certificates through DNS-01 or HTTP-01, and manage renewal through a systemd
+        timer and deploy hooks.
+    options:
+      certbot_install_source:
+        description: 'How certbot is provided: the distribution package, an isolated virtual environment managed by pyproject_install,
+          or an external executable.'
+        type: str
+        choices:
+          - apt
+          - pypi
+          - none
+        default: apt
+        required: false
+      certbot_package_state:
+        description: APT package state when certbot_install_source is apt.
+        type: str
+        choices:
+          - present
+          - latest
+        default: present
+        required: false
+      certbot_venv_dir:
+        description: Virtual environment directory when certbot_install_source is pypi.
+        type: str
+        default: /var/lib/certbot/venv
+        required: false
+      certbot_pypi_version:
+        description: Optional certbot version pin for the pypi install source.
+        type: str
+        default: ''
+        required: false
+      certbot_pypi_packages:
+        description: Explicit packages installed by pyproject_install. Empty derives certbot and the selected DNS plugin.
+        type: list
+        default: []
+        required: false
+      certbot_bin:
+        description: Absolute path to the certbot executable. Derived from the install source when empty; required for certbot_install_source=none.
+        type: str
+        default: ''
+        required: false
+      certbot_email:
+        description: Contact address registered with the ACME account. Required when certificates are requested.
+        type: str
+        default: ''
+        required: false
+      certbot_staging:
+        description: Use the Let's Encrypt staging CA. Mutually exclusive with certbot_acme_server.
+        type: bool
+        default: false
+        required: false
+      certbot_acme_ca:
+        description: Named ACME CA preset used when certbot_acme_server is empty.
+        type: str
+        choices:
+          - letsencrypt
+          - zerossl
+          - google
+          - buypass
+          - custom
+        default: letsencrypt
+        required: false
+      certbot_acme_server:
+        description: ACME directory URL override, for example a private CA or a Pebble test server.
+        type: str
+        default: ''
+        required: false
+      certbot_no_verify_ssl:
+        description: Disable TLS verification of the ACME directory. Use only with test or private CAs.
+        type: bool
+        default: false
+        required: false
+      certbot_eab:
+        description: External account binding credentials with key_id and hmac_key. Required only by CAs that use EAB.
+        type: dict
+        default: {}
+        required: false
+        no_log: true
+      certbot_certificates:
+        description: Certificates to obtain. Each entry supports name, domains, force, deploy_hooks, and extra_args.
+        type: list
+        default: []
+        required: false
+      certbot_challenge:
+        description: ACME challenge type.
+        type: str
+        choices:
+          - dns-01
+          - http-01
+        default: dns-01
+        required: false
+      certbot_key_type:
+        description: Certificate key type.
+        type: str
+        choices:
+          - ecdsa
+          - rsa
+        default: ecdsa
+        required: false
+      certbot_elliptic_curve:
+        description: Elliptic curve used when certbot_key_type is ecdsa.
+        type: str
+        default: secp256r1
+        required: false
+      certbot_rsa_key_size:
+        description: RSA key size used when certbot_key_type is rsa.
+        type: int
+        default: 4096
+        required: false
+      certbot_dns_provider:
+        description: certbot-dns-<provider> plugin name. Set to acmedns for the acme-dns manual hooks, or empty when only
+          HTTP-01 is used.
+        type: str
+        default: cloudflare
+        required: false
+      certbot_dns_credentials:
+        description: Raw plugin credentials rendered as an INI file and passed verbatim to --dns-<provider>-credentials. Keys
+          are plugin-specific.
+        type: dict
+        default: {}
+        required: false
+        no_log: true
+      certbot_dns_credentials_dir:
+        description: Directory for the rendered DNS plugin credentials file.
+        type: str
+        default: '{{ certbot_config_dir }}/credentials'
+        required: false
+      certbot_dns_credentials_file:
+        description: Path of the rendered DNS plugin credentials file.
+        type: str
+        default: '{{ certbot_dns_credentials_dir }}/{{ certbot_dns_provider }}.ini'
+        required: false
+      certbot_dns_propagation_seconds:
+        description: Seconds to wait for DNS propagation before validation.
+        type: int
+        default: 30
+        required: false
+      certbot_acmedns_register:
+        description: Register missing acme-dns accounts through acme_dns_register.
+        type: bool
+        default: false
+        required: false
+      certbot_acmedns_server_url:
+        description: acme-dns server URL used when registering accounts.
+        type: str
+        default: ''
+        required: false
+      certbot_acmedns_accounts:
+        description: acme-dns accounts keyed by validation domain.
+        type: dict
+        default: {}
+        required: false
+        no_log: true
+      certbot_acmedns_credentials_dir:
+        description: Controller-side persistence directory used by acme_dns_register. Empty uses its default.
+        type: str
+        default: ''
+        required: false
+      certbot_acmedns_storage_path:
+        description: Host-side JSON registry consumed by the acme-dns manual auth hook.
+        type: str
+        default: '{{ certbot_dns_credentials_dir }}/acmedns.json'
+        required: false
+      certbot_acmedns_cloudflare_api_token:
+        description: Cloudflare account-level API token used by acme_dns_register for CNAME records.
+        type: str
+        default: ''
+        required: false
+        no_log: true
+      certbot_acmedns_cloudflare_zone_token:
+        description: Cloudflare zone-scoped API token used by acme_dns_register for CNAME records.
+        type: str
+        default: ''
+        required: false
+        no_log: true
+      certbot_acmedns_cloudflare_zone:
+        description: Global Cloudflare zone fallback used by acme_dns_register.
+        type: str
+        default: ''
+        required: false
+      certbot_acmedns_cloudflare_zones:
+        description: Per-validation-domain Cloudflare zone overrides used by acme_dns_register.
+        type: dict
+        default: {}
+        required: false
+      certbot_acmedns_manual_prompt:
+        description: Prompt for CNAME records after a fresh acme-dns registration when no Cloudflare token is available.
+        type: bool
+        default: true
+        required: false
+      certbot_http01_method:
+        description: 'HTTP-01 authenticator: standalone or webroot.'
+        type: str
+        choices:
+          - standalone
+          - webroot
+        default: standalone
+        required: false
+      certbot_http01_port:
+        description: Port used by the standalone HTTP-01 authenticator.
+        type: int
+        default: 80
+        required: false
+      certbot_webroot_path:
+        description: Webroot served by the existing web server when certbot_http01_method is webroot.
+        type: str
+        default: /var/www/html
+        required: false
+      certbot_deploy_hooks:
+        description: Shell commands run after every successful renewal. Use certbot_certificates[].deploy_hooks for lineage-specific
+          hooks.
+        type: list
+        default: []
+        required: false
+      certbot_manage_timer:
+        description: Render and manage the role-owned renewal timer.
+        type: str
+        default: '{{ certbot_install_source in [''apt'', ''pypi''] }}'
+        required: false
+      certbot_timer_enabled:
+        description: Enable and start the managed renewal timer.
+        type: bool
+        default: true
+        required: false
+      certbot_timer_on_calendar:
+        description: systemd OnCalendar expression for the renewal timer.
+        type: str
+        default: '*-*-* 00,12:00:00'
+        required: false
+      certbot_timer_randomized_delay_sec:
+        description: systemd RandomizedDelaySec value for the renewal timer.
+        type: str
+        default: 12h
+        required: false
+      certbot_renew_args:
+        description: Arguments used by the role-managed systemd unit for certbot renew.
+        type: list
+        default: '{{- [''-q''] + ([''--no-verify-ssl''] if certbot_no_verify_ssl | ansible.builtin.bool else []) -}}'
+        required: false
+        elements: str
+      certbot_config_dir:
+        description: certbot configuration directory.
+        type: str
+        default: /etc/letsencrypt
+        required: false
+      certbot_work_dir:
+        description: certbot work directory.
+        type: str
+        default: /var/lib/letsencrypt
+        required: false
+      certbot_log_dir:
+        description: certbot log directory.
+        type: str
+        default: /var/log/letsencrypt
+        required: false
+      certbot_manage_cli_ini:
+        description: Write and manage the role-owned cli.ini.
+        type: str
+        default: '{{ certbot_install_source == ''pypi'' }}'
+        required: false
+      certbot_manage_logrotate:
+        description: Write and manage the role-owned logrotate snippet.
+        type: str
+        default: '{{ certbot_install_source == ''pypi'' }}'
+        required: false
+      certbot_cli_ini_extra:
+        description: 'Extra cli.ini options, for example {no-verify-ssl: true} for a private ACME CA.'
+        type: dict
+        default: {}
+        required: false

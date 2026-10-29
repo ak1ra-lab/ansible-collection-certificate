@@ -1,5 +1,9 @@
 # cert_manager
 
+> The canonical variable reference for this role is
+> [`meta/argument_specs.yml`](meta/argument_specs.yml). This README keeps the
+> narrative and deployed-artifact details; update both when the contract changes.
+
 Manage [cert-manager](https://cert-manager.io/) in a Kubernetes cluster:
 
 - optionally install or upgrade the controller from the official release

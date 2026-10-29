@@ -1,0 +1,59 @@
+argument_specs:
+  main:
+    short_description: Register acme-dns accounts and publish CNAME records
+    description:
+      - Register one acme-dns account per validation domain, persist the credentials on the controller, and create _acme-challenge
+        CNAME records through Cloudflare or a manual fallback.
+    options:
+      acme_dns_register_server_url:
+        description: acme-dns server URL. Required when registering accounts or when accounts are supplied.
+        type: str
+        default: ''
+        required: false
+      acme_dns_register_accounts:
+        description: Existing accounts keyed by validation domain. Each account must contain username, password, subdomain,
+          and fulldomain.
+        type: dict
+        default: {}
+        required: false
+        no_log: true
+      acme_dns_register_cloudflare_api_token:
+        description: Cloudflare account-level API token. Keep it in Ansible Vault.
+        type: str
+        default: ''
+        required: false
+        no_log: true
+      acme_dns_register_cloudflare_zone_token:
+        description: Cloudflare zone-scoped API token. Preferred over the account-level token.
+        type: str
+        default: ''
+        required: false
+        no_log: true
+      acme_dns_register_cloudflare_zone:
+        description: Global Cloudflare DNS zone fallback. When empty, the zone is derived from the last two labels of each
+          validation domain.
+        type: str
+        default: ''
+        required: false
+      acme_dns_register_cloudflare_zones:
+        description: Per-validation-domain Cloudflare zone overrides.
+        type: dict
+        default: {}
+        required: false
+      acme_dns_register_manual_prompt:
+        description: Pause after a fresh registration so the operator can add CNAME records when no Cloudflare token is available.
+        type: bool
+        default: true
+        required: false
+      acme_dns_register_acme_domains:
+        description: ACME identifiers for which accounts and _acme-challenge CNAME records are required. Wildcards are normalized
+          to their base validation domain.
+        type: list
+        default: []
+        required: false
+      acme_dns_register_credentials_dir:
+        description: Controller directory where acme_dns_credentials.yaml is persisted. Empty uses {{ playbook_dir }}/host_vars/{{
+          inventory_hostname }}.
+        type: str
+        default: ''
+        required: false

@@ -1,0 +1,182 @@
+argument_specs:
+  main:
+    short_description: Deploy an acme-dns server
+    description:
+      - Build and deploy an acme-dns server with its config, systemd unit, and service account. The server answers ACME DNS-01
+        challenge TXT records for a delegated zone.
+    options:
+      acme_dns_server_ip:
+        description: Public IPv4 address of the acme-dns server, used in the rendered A records. Required.
+        type: str
+        required: true
+      acme_dns_zone:
+        description: DNS zone served by this acme-dns instance. The parent zone must delegate it to acme_dns_nsname. Required.
+        type: str
+        required: true
+      acme_dns_nsname:
+        description: Nameserver hostname the zone is delegated to. Required.
+        type: str
+        required: true
+      acme_dns_nsadmin:
+        description: Administrator email with @ replaced by a dot. Required.
+        type: str
+        required: true
+      acme_dns_listen:
+        description: DNS listen address. Use 127.0.0.1:53 to avoid conflicts with systemd-resolved.
+        type: str
+        default: 0.0.0.0:53
+        required: false
+      acme_dns_protocol:
+        description: 'DNS protocol: both, both4, both6, udp, udp4, udp6, tcp, tcp4, tcp6.'
+        type: str
+        choices:
+          - both
+          - both4
+          - both6
+          - udp
+          - udp4
+          - udp6
+          - tcp
+          - tcp4
+          - tcp6
+        default: both
+        required: false
+      acme_dns_debug:
+        description: Enable acme-dns debug messages.
+        type: bool
+        default: false
+        required: false
+      acme_dns_api_ip:
+        description: API listen IP. Bind to 127.0.0.1 unless a reverse proxy handles TLS termination.
+        type: str
+        default: 0.0.0.0
+        required: false
+      acme_dns_api_port:
+        description: API listen port.
+        type: str
+        default: '6443'
+        required: false
+      acme_dns_api_tls:
+        description: 'TLS mode: none, letsencrypt, letsencryptstaging.'
+        type: str
+        choices:
+          - none
+          - letsencrypt
+          - letsencryptstaging
+        default: letsencrypt
+        required: false
+      acme_dns_api_acme_cache_dir:
+        description: Cache directory for the API certificate when a Let's Encrypt TLS mode is used.
+        type: str
+        default: acme
+        required: false
+      acme_dns_api_notification_email:
+        description: Let's Encrypt expiry notification email.
+        type: str
+        default: ''
+        required: false
+      acme_dns_api_disable_registration:
+        description: Disable the /register API endpoint.
+        type: bool
+        default: false
+        required: false
+      acme_dns_api_corsorigins:
+        description: CORS AllowOrigins; set to e.g. [" to restrict.
+        type: list
+        default: []
+        required: false
+      acme_dns_api_use_header:
+        description: Read the client IP from the configured reverse-proxy header.
+        type: bool
+        default: false
+        required: false
+      acme_dns_api_header_name:
+        description: Reverse-proxy header used for the client IP when acme_dns_api_use_header is true.
+        type: str
+        default: X-Forwarded-For
+        required: false
+      acme_dns_db_engine:
+        description: sqlite or postgres (upstream v2.0+; the old sqlite3 value was removed).
+        type: str
+        choices:
+          - sqlite
+          - postgres
+        default: sqlite
+        required: false
+      acme_dns_db_connection:
+        description: filename for sqlite, postgres://$user:$pass@$host/$db for postgres.
+        type: str
+        default: acme-dns.db
+        required: false
+      acme_dns_loglevel:
+        description: error, warning, info, debug.
+        type: str
+        choices:
+          - error
+          - warning
+          - info
+          - debug
+        default: info
+        required: false
+      acme_dns_logtype:
+        description: stdout or file.
+        type: str
+        choices:
+          - stdout
+          - file
+        default: stdout
+        required: false
+      acme_dns_logfile:
+        description: Log file path when acme_dns_logtype is file.
+        type: str
+        default: ./acme-dns.log
+        required: false
+      acme_dns_logformat:
+        description: json or text.
+        type: str
+        choices:
+          - json
+          - text
+        default: json
+        required: false
+      acme_dns_user:
+        description: Dedicated service account and group. The default data/config directories use the same name as the user;
+          override the paths individually to relocate them.
+        type: str
+        default: acme-dns
+        required: false
+      acme_dns_group:
+        description: Service group.
+        type: str
+        default: acme-dns
+        required: false
+      acme_dns_home_dir:
+        description: Service data directory.
+        type: str
+        default: /var/lib/{{ acme_dns_user }}
+        required: false
+      acme_dns_config_dir:
+        description: Service configuration directory.
+        type: str
+        default: /etc/{{ acme_dns_user }}
+        required: false
+      acme_dns_install_dir:
+        description: Binary install directory.
+        type: str
+        default: /usr/local/bin
+        required: false
+      acme_dns_go_build_repo_version:
+        description: acme-dns release tag to build.
+        type: str
+        default: v2.0.2
+        required: false
+      acme_dns_go_build_goarch:
+        description: Target architecture for the local go_build build.
+        type: str
+        default: amd64
+        required: false
+      acme_dns_go_build_base_dir:
+        description: Controller-local build directory used by go_build.
+        type: str
+        default: /tmp/acme-dns
+        required: false

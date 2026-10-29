@@ -1,5 +1,9 @@
 # acme_dns_register
 
+> The canonical variable reference for this role is
+> [`meta/argument_specs.yml`](meta/argument_specs.yml). This README keeps the
+> narrative and deployed-artifact details; update both when the contract changes.
+
 Registers one [acme-dns](https://github.com/joohoi/acme-dns) account per
 **validation domain**, persists the resulting domain -> account mapping to a
 host_vars directory, and creates the required `_acme-challenge` CNAME records.
