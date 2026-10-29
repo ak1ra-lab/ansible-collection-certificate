@@ -32,10 +32,12 @@ dev = [
     "pre-commit>=4.2.0",
 ]
 
-# The collection currently ships roles and Jinja templates only. mypy still
-# covers the Python test helpers as soon as they are added.
+# The collection currently ships roles and Jinja templates only. mypy checks
+# the test helpers; the empty tests/unit package keeps the configured target
+# valid until the first Python helper is added.
 [tool.mypy]
 python_version = "3.11"
+files = ["tests"]
 check_untyped_defs = true
 disallow_untyped_defs = true
 no_implicit_optional = true
