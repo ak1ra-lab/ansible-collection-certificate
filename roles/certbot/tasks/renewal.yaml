@@ -64,7 +64,7 @@
         - not (item.item.managed | ansible.builtin.bool)
         - item.content is defined
         - >-
-          'Managed by ak1ra_lab.general.certbot'
+          'Managed by ak1ra_lab.certificate.certbot'
           in (item.content | b64decode)
       ansible.builtin.file:
         path: "{{ item.item.path }}"

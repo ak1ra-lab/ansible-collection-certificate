@@ -30,7 +30,7 @@ warning when `pypi` is selected.
 
 For `apt` and `pypi`, the role always renders its own
 `/etc/systemd/system/certbot.service` and `certbot.timer` with a
-`Managed by ak1ra_lab.general.certbot` marker. This shadows the distribution
+`Managed by ak1ra_lab.certificate.certbot` marker. This shadows the distribution
 units and keeps `certbot_bin`, the explicit `--config-dir`/`--work-dir`/
 `--logs-dir` paths, `certbot_renew_args` and `certbot_no_verify_ssl`
 consistent across install sources. Switching between apt and pypi only
@@ -218,7 +218,7 @@ many SANs as long as each validation domain has its own account.
 
 The accounts can come from the persisted
 `host_vars/<inventory_hostname>/acme_dns_credentials.yaml` written by
-`ak1ra_lab.general.acme_dns_register`, from `certbot_acmedns_accounts` (the
+`ak1ra_lab.certificate.acme_dns_register`, from `certbot_acmedns_accounts` (the
 same `domain -> account` mapping; explicit entries override the persisted
 registry), or be registered automatically:
 
@@ -492,7 +492,7 @@ units in `/etc/systemd/system`); for `none` it does so only when
 
 - name: obtain certificates
   ansible.builtin.include_role:
-    name: ak1ra_lab.general.certbot
+    name: ak1ra_lab.certificate.certbot
   vars:
     certbot_email: admin@example.com
     certbot_certificates:
@@ -519,25 +519,25 @@ The role-managed systemd units, `cli.ini` and logrotate snippets are
 independently written equivalents of the Debian 13 package files (the cron
 job is intentionally not carried over). The units are always managed for apt
 and pypi; the other two files are optional and carry a
-`Managed by ak1ra_lab.general.certbot` marker. `certbot_manage_cli_ini` and
+`Managed by ak1ra_lab.certificate.certbot` marker. `certbot_manage_cli_ini` and
 `certbot_manage_logrotate` default to true for pypi and false otherwise;
 `certbot_cli_ini_extra` (empty by default) adds arbitrary `cli.ini` options.
 The role removes its own marked `cli.ini`/logrotate copies when the
 corresponding flag is disabled, and its own marked units when it no longer
 manages them (for example after switching to `none`). No certbot or Debian
-source files are copied into this collection; the collection remains MIT
-licensed.
+source files are copied into this collection; the collection remains
+GPL-3.0-or-later licensed.
 
 ## Testing
 
 Molecule scenarios (Debian 12/13):
 
-- `certbot/apt` - install from apt, issue a certificate against a local Pebble
+- `certbot_apt` - install from apt, issue a certificate against a local Pebble
   ACME server via HTTP-01 with EAB enabled, and verify the renewal
   configuration, per-certificate deploy hook dispatch and timer.
-- `certbot/pypi` - install certbot and `certbot-dns-cloudflare` into the venv,
+- `certbot_pypi` - install certbot and `certbot-dns-cloudflare` into the venv,
   verify the plugin, credentials, hook, `cli.ini`, logrotate and units.
-- `certbot/acmedns` - invoke the acme-dns auth hook against a fake API and
+- `certbot_acmedns` - invoke the acme-dns auth hook against a fake API and
   verify that `example.com`, `*.example.com` and `www.example.com` select the
   correct per-domain accounts, and that an unregistered domain fails clearly.
 

@@ -92,7 +92,7 @@ The role also sets `acme_dns_register_server_url` and
 When the role is invoked with `include_role`/`import_role` and `vars:` (role
 parameters), Ansible gives those parameters precedence over `set_fact` inside
 the role, so the input-named facts cannot be relied on for the result. Read the
-`effective_*` facts in that case; `ak1ra_lab.general.certbot` does so.
+`effective_*` facts in that case; `ak1ra_lab.certificate.certbot` does so.
 
 ## Notes
 

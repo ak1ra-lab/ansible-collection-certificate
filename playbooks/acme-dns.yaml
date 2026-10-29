@@ -7,4 +7,4 @@
   tasks:
     - name: deploy acme-dns role
       ansible.builtin.import_role:
-        name: ak1ra_lab.general.acme_dns
+        name: ak1ra_lab.certificate.acme_dns

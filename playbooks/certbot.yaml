@@ -7,4 +7,4 @@
   tasks:
     - name: deploy certbot role
       ansible.builtin.import_role:
-        name: ak1ra_lab.general.certbot
+        name: ak1ra_lab.certificate.certbot

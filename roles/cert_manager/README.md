@@ -263,7 +263,7 @@ See `defaults/main.yaml` for the full list. The most important ones:
 
 ## Testing
 
-`cert_manager/render` renders the Secrets and ClusterIssuers to the controller
+`cert_manager_render` renders the Secrets and ClusterIssuers to the controller
 and verifies their structure, shared/reference-only Secret handling, solver
 references and permissions. It does not need a Kubernetes cluster; the apply
 path is covered by using the role against a real cluster.

@@ -128,7 +128,7 @@ Each certificate domain needs a `_acme-challenge` CNAME pointing at the
 _acme-challenge.example.com. CNAME <subdomain>.auth.acme-dns.example.com.
 ```
 
-This is handled by `ak1ra_lab.general.acme_dns_register` when Cloudflare
+This is handled by `ak1ra_lab.certificate.acme_dns_register` when Cloudflare
 credentials are supplied; otherwise the role prompts for the records.
 
 ## Requirements

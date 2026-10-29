@@ -44,7 +44,7 @@
 - name: register or reuse the acme-dns accounts
   when: certbot_acmedns_register | ansible.builtin.bool
   ansible.builtin.include_role:
-    name: ak1ra_lab.general.acme_dns_register
+    name: ak1ra_lab.certificate.acme_dns_register
   vars:
     acme_dns_register_server_url: "{{ _certbot_acmedns_server_url }}"
     acme_dns_register_accounts: "{{ _certbot_acmedns_accounts }}"

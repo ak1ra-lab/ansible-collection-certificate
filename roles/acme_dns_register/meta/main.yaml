@@ -8,8 +8,8 @@ galaxy_info:
     required _acme-challenge CNAME records so that TLS certificates can be
     obtained via DNS-01 challenge without storing DNS provider credentials on
     the remote host.
-  license: MIT
-  min_ansible_version: "2.18"
+  license: GPL-3.0-or-later
+  min_ansible_version: "2.19"
 
   platforms:
     - name: Ubuntu

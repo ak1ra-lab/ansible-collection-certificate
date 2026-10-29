@@ -20,7 +20,7 @@
           {{ _certbot_stale_units | default([])
              + ([item._certbot_existing_unit]
                 if (item.content is defined
-                    and 'Managed by ak1ra_lab.general.certbot'
+                    and 'Managed by ak1ra_lab.certificate.certbot'
                         in (item.content | b64decode))
                 else []) }}
       loop: "{{ _certbot_existing_units.results }}"

@@ -1,5 +1,5 @@
 ---
-# ak1ra_lab.general.certbot
+# ak1ra_lab.certificate.certbot
 #
 # Obtain and renew certificates with certbot on a systemd host.  DNS-01 is
 # the primary challenge type (Cloudflare and acme-dns are the supported

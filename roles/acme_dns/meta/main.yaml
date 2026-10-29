@@ -6,8 +6,8 @@ galaxy_info:
   description: >-
     Deploy an acme-dns server with DNS and RESTful HTTP API to handle
     ACME DNS-01 challenges.
-  license: MIT
-  min_ansible_version: "2.18"
+  license: GPL-3.0-or-later
+  min_ansible_version: "2.19"
 
   platforms:
     - name: Ubuntu
