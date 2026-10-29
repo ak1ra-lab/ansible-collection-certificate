@@ -1,0 +1,6 @@
+---
+minor_changes:
+  - Added role argument specs and migrated the documentation site to Sphinx
+    and antsibull-docs. Role reference pages are generated from
+    ``meta/argument_specs.yml``; the role READMEs keep narrative and deployed
+    artifact details.

@@ -8,19 +8,19 @@
 # documentation:
 # http://www.sphinx-doc.org/en/master/config
 
-project = 'ak1ra_lab.certificate'
-copyright = '2026 ak1ra'
+project = "ak1ra_lab.certificate"
+copyright = "2026 ak1ra"
 
-title = 'ak1ra_lab.certificate documentation'
-html_short_title = 'ak1ra_lab.certificate documentation'
+title = "ak1ra_lab.certificate documentation"
+html_short_title = "ak1ra_lab.certificate documentation"
 
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.intersphinx', 'sphinx_antsibull_ext']
+extensions = ["sphinx.ext.autodoc", "sphinx.ext.intersphinx", "sphinx_antsibull_ext"]
 
-pygments_style = 'ansible'
+pygments_style = "ansible"
 
-highlight_language = 'YAML+Jinja'
+highlight_language = "YAML+Jinja"
 
-html_theme = 'sphinx_ansible_theme'
+html_theme = "sphinx_ansible_theme"
 html_show_sphinx = False
 
 display_version = False
@@ -32,22 +32,22 @@ html_copy_source = False
 
 # See https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html#confval-intersphinx_mapping for the syntax
 intersphinx_mapping = {
-    'python': ('https://docs.python.org/2/', (None, '../python2.inv')),
-    'python3': ('https://docs.python.org/3/', (None, '../python3.inv')),
-    'jinja2': ('http://jinja.palletsprojects.com/', (None, '../jinja2.inv')),
-    'ansible_devel': ('https://docs.ansible.com/projects/ansible/devel/', (None, '../ansible_devel.inv')),
+    "python": ("https://docs.python.org/2/", (None, "../python2.inv")),
+    "python3": ("https://docs.python.org/3/", (None, "../python3.inv")),
+    "jinja2": ("http://jinja.palletsprojects.com/", (None, "../jinja2.inv")),
+    "ansible_devel": ("https://docs.ansible.com/projects/ansible/devel/", (None, "../ansible_devel.inv")),
     # If you want references to resolve to a released Ansible version (say, `5`), uncomment and replace X by this version:
     # 'ansibleX': ('https://docs.ansible.com/projects/ansible/X/', (None, '../ansibleX.inv')),
 }
 
-default_role = 'any'
+default_role = "any"
 
 nitpicky = True
 
 
 html_context = {
-    'github_user': 'ak1ra-lab',
-    'github_repo': 'ansible-collection-certificate',
-    'github_version': 'main',
-    'doc_path': 'docs/docsite/rst',
+    "github_user": "ak1ra-lab",
+    "github_repo": "ansible-collection-certificate",
+    "github_version": "main",
+    "doc_path": "docs/docsite/rst",
 }

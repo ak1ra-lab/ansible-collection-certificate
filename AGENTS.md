@@ -15,11 +15,14 @@ human contributor workflow.
 - Lint+format: **ruff** (`uv run ruff check --fix .` and
   `uv run ruff format .`). Never `black`/`isort`/`flake8`.
 - Typecheck: **mypy** with the pragmatic config in `pyproject.toml`.
-  `ansible-test sanity` remains the authoritative gate; `ty` is not used.
+  `ansible-test sanity` remains the authoritative gate.
 - Ansible lint: `uv run ansible-lint` (production profile).
 - Tests: **tox-ansible** (`uv run tox list --ansible`, then
   `uv run tox -e sanity-py3.13-2.21 --ansible` or
   `unit-py3.13-2.21`). Molecule stays separate. Never add `pytest-ansible`.
+- Changelog: `just changelog-lint`, `just changelog-release X.Y.Z`, and
+  `just changelog-generate`. `CHANGELOG.rst` is generated from
+  `changelogs/fragments/` and must not be edited by hand.
 
 ## Ansible layout
 
@@ -30,14 +33,19 @@ install both collections into the project-local path before linting or
 running playbooks:
 
 ```shell
-mkdir -p .ansible/collections
-uv run ansible-galaxy collection install --force --no-deps -p .ansible/collections .
-uv run ansible-galaxy collection install --no-deps -p .ansible/collections ak1ra_lab.general community.general kubernetes.core
+just ansible-collection-install
 ```
 
-`--no-deps` keeps the local checkout from resolving the not-yet-published
-`ak1ra_lab.general >=0.4.0` dependency from Galaxy; install the general
-collection separately from its checkout until that release exists.
+The recipe installs the collection under test and the sibling
+`../ansible-collection-general` checkout with `--no-deps`. That local copy is
+the temporary bridge until `ak1ra_lab.general 0.4.0` is published; Galaxy
+resolves the real dependency after the first release.
+
+`requirements.yml` lists the collections needed by the roles and the Molecule
+container lifecycle. `requirements.txt` lists the controller-side Python
+packages (`kubernetes`); `meta/execution-environment.yml` feeds both to
+ansible-builder. `tests/molecule/requirements.yml` holds only the additional
+test collections and is installed by tox-ansible/ade.
 
 `requirements.yml` lists the collections needed by the roles and the Molecule
 container lifecycle. `requirements.txt` lists the controller-side Python
@@ -98,6 +106,20 @@ artifact: `.agents`, `.ansible`, `.venv`, `site`, `tests/output`,
 tooling (`.github`, `.pre-commit-config.yaml`, `ansible.cfg`, `pyproject.toml`,
 `ruff.toml`, `importer_result.json`). `requirements.yml` stays because
 `meta/execution-environment.yml` references it. `meta/runtime.yml`,
-`README.md`, `LICENSE`, and `CHANGELOG.rst` must remain in the tarball; CI
-checks them after `ansible-galaxy collection build` and runs
+`README.md`, `LICENSE`, `CODE_OF_CONDUCT.md`, and `CHANGELOG.rst` must remain
+in the tarball; CI checks them after `ansible-galaxy collection build` and runs
 `galaxy-importer`.
+
+## Releases
+
+Release order: `ak1ra_lab.general 0.4.0`, then `ak1ra_lab.certificate 0.1.0`,
+then `ak1ra_lab.network 0.4.0`. The Git tag is `vX.Y.Z` and must match
+`galaxy.yml`.
+
+Before tagging: run the lint/typecheck checks, the supported sanity/unit
+environments, the release-scope Molecule scenarios, and `just docs-build`;
+build the artifact and run `galaxy-importer`; confirm `meta/runtime.yml` is in
+the tarball. The `Release` workflow publishes only from a published GitHub
+release in the protected `release` environment, using
+`ANSIBLE_GALAXY_API_KEY`; it does not create tags or releases. Never publish to
+Galaxy from a local shell.

@@ -1,0 +1,15 @@
+---
+major_changes:
+  - New collection with the ``acme_dns``, ``acme_dns_register``, ``certbot``
+    and ``cert_manager`` roles, migrated with Git history from
+    ``ak1ra_lab.general``. The certificate FQCNs are now
+    ``ak1ra_lab.certificate.*``.
+minor_changes:
+  - Added the certificate Molecule scenarios as flat, isolated scenarios
+    (``acme_dns_register_basic``, ``certbot_apt``, ``certbot_pypi``,
+    ``certbot_acmedns`` and ``cert_manager_render``), with controller-only
+    coverage where no container is needed.
+  - Moved the ``acme-dns.yaml`` and ``certbot.yaml`` playbooks and the role
+    documentation to this collection. Certificate issuance is no longer
+    orchestrated from ``ak1ra_lab.network.mihomo_server``; consumer playbooks
+    compose the two collections explicitly.

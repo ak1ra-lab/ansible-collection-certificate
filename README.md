@@ -6,6 +6,7 @@ and cert-manager. It is consumed alongside
 which provides the generic build and release helpers used by these roles.
 
 Documentation: <https://ak1ra-lab.github.io/ansible-collection-certificate/>
+Release notes: [CHANGELOG.rst](CHANGELOG.rst)
 
 ## Roles
 
@@ -23,18 +24,31 @@ reference.
 
 ## Requirements
 
-- Controller: `ansible-core >= 2.19.0`, Python `>= 3.11`.
-- Managed nodes: Debian 12/13 (the certificate roles and their Molecule
-  scenarios are tested on those images).
-- Controller Python: `kubernetes` for `cert_manager` (see
+- Controller: `ansible-core >= 2.19.0`; tested with ansible-core 2.19, 2.20,
+  and 2.21 (plus the weekly `devel`/`milestone` builds).
+- Controller Python: `>= 3.11`; tested with Python 3.11, 3.12, and 3.13.
+  ansible-core 2.20 and 2.21 additionally support Python 3.12-3.14.
+- Managed nodes: Debian 12 (target Python 3.11) and Debian 13 (target Python
+  3.13). The certificate roles and their Molecule scenarios are tested on
+  those images and use the managed node's `/usr/bin/python3`.
+- Controller Python package: `kubernetes` for `cert_manager` (see
   [`requirements.txt`](requirements.txt)).
 - Collections: `ak1ra_lab.general >= 0.4.0`, `community.general >= 8.0.0`,
-  `kubernetes.core >= 6.0.0`. `ansible-galaxy` resolves them from
-  [`galaxy.yml`](galaxy.yml).
+  `kubernetes.core >= 6.0.0` (resolved from [`galaxy.yml`](galaxy.yml)).
+
+`ak1ra_lab.certificate` depends on `ak1ra_lab.general` for `go_build`,
+`pyproject_install`, and `github_releases_info`. Galaxy resolves that
+dependency automatically once general `0.4.0` is published.
 
 ## Install
 
-Create a `requirements.yaml` in the consuming repository:
+Install the released collection from Ansible Galaxy:
+
+```shell
+ansible-galaxy collection install ak1ra_lab.certificate
+```
+
+Or pin it in a consumer `requirements.yml`:
 
 ```yaml
 ---
@@ -43,25 +57,48 @@ collections:
     version: ">=0.1.0"
 ```
 
-Install into the project-local collections path:
-
 ```shell
-ansible-galaxy collection install -r requirements.yaml -p ./.ansible/collections
+ansible-galaxy collection install -r requirements.yml
 ```
 
-Until the first Galaxy release, install the collection from Git:
+Galaxy also installs `ak1ra_lab.general >= 0.4.0`, `community.general`, and
+`kubernetes.core`. The `0.1.0` release is the first Galaxy release; until it
+is published, install from a Git tag or commit and pin the revision instead of
+following a branch.
 
-```yaml
----
-collections:
-  - name: git+https://github.com/ak1ra-lab/ansible-collection-certificate.git
-    version: main
-```
+See [Getting started](docs/docsite/rst/getting-started.rst) for control-node
+dependencies and the temporary local general checkout used for development.
 
-`ak1ra_lab.general` must be available from Galaxy or installed from its
-repository first. This collection is intended to be consumed from
-`./.ansible/collections`, with the consumer repository's `ansible.cfg`
-including that path at the front of `collections_path`.
+## Versioning and deprecation
+
+The collection follows semantic versioning once it reaches `1.0.0`. Before
+`1.0.0`, a minor release may contain a documented breaking change; patch
+releases are limited to compatible fixes.
+
+- Breaking changes are listed under **Breaking Changes / Porting Guide** in
+  [CHANGELOG.rst](CHANGELOG.rst).
+- Deprecated role variables and features are documented in the changelog and
+  the role reference, and remain available for at least one minor release
+  before removal. Before `1.0.0`, removal may happen in a minor release.
+- Raising the minimum ansible-core or Python version is treated as a breaking
+  change.
+- The `galaxy.yml` version, the Git tag (`vX.Y.Z`), and the changelog release
+  must match for every release.
+
+Release order for the `ak1ra_lab` collections:
+
+1. `ak1ra_lab.general 0.4.0`
+2. `ak1ra_lab.certificate 0.1.0` (depends on general `>=0.4.0`)
+3. `ak1ra_lab.network 0.4.0` (depends on general `>=0.4.0`)
+
+## Communication
+
+- Ansible Forum: use the [`ak1ra-lab` tag](https://forum.ansible.com/tag/ak1ra-lab)
+  for questions and usage discussions.
+- Bug reports and feature requests:
+  <https://github.com/ak1ra-lab/ansible-collection-certificate/issues>
+- Code of Conduct: [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md), which points to
+  the [Ansible Community Code of Conduct](https://docs.ansible.com/ansible/latest/community/code_of_conduct.html).
 
 ## Development
 
@@ -71,6 +108,7 @@ uv run ansible-lint
 uv run tox list --ansible
 uv run tox -e sanity-py3.13-2.21 --ansible
 uv run tox -e unit-py3.13-2.21 --ansible
+just changelog-lint
 just docs-lint
 just docs-build
 ```
@@ -85,7 +123,8 @@ applies.
 Molecule scenarios are flat under `extensions/molecule/`, each one owns its
 containers, and the suite needs Podman (rootless locally; CI uses rootful) or
 Docker. They are run separately from the lint/sanity gates. See
-[CONTRIBUTING.md](CONTRIBUTING.md) for the full workflow and scenario list.
+[CONTRIBUTING.md](CONTRIBUTING.md) for the full workflow, scenario list, and
+release checklist.
 
 ## License
 

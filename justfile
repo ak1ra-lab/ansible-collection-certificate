@@ -11,7 +11,7 @@ default:
     @just --list --unsorted
 
 # Run all available recipes
-all: lint typecheck unit-test ansible-lint docs-lint docs-build
+all: lint typecheck unit-test ansible-lint changelog-lint docs-lint docs-build
 
 # Sync development dependencies (may update uv.lock if pyproject.toml changed)
 sync *ARGS:
@@ -24,7 +24,7 @@ lint:
 
 # Run static type checks with mypy
 typecheck:
-    uv run mypy .
+    uv run mypy tests/
 
 # Show the tox-ansible environment matrix
 tox-list:
@@ -49,6 +49,18 @@ ansible-collection-install:
 # Lint all Ansible content with ansible-lint (production profile)
 ansible-lint:
     uv run ansible-lint
+
+# Lint the antsibull-changelog fragments
+changelog-lint:
+    uv run --group lint antsibull-changelog lint
+
+# Add a release to changelogs/changelog.yaml, consuming the fragments
+changelog-release version:
+    uv run --group lint antsibull-changelog release --version {{version}}
+
+# Regenerate CHANGELOG.rst from changelogs/changelog.yaml
+changelog-generate:
+    uv run --group lint antsibull-changelog generate
 
 # Build the Galaxy artifact into dist/
 build:

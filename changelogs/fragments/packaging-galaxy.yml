@@ -1,0 +1,11 @@
+---
+minor_changes:
+  - Prepared the collection for Galaxy with GPL-3.0-or-later licensing,
+    ``meta/runtime.yml`` (ansible-core >= 2.19.0),
+    ``requirements.txt``/``meta/execution-environment.yml``, a ``build_ignore``
+    artifact and a build-import CI gate that checks the tarball and runs
+    ``galaxy-importer``.
+  - Added a protected release workflow that builds, imports and publishes the
+    collection from the ``vX.Y.Z`` GitHub release tag matching ``galaxy.yml``.
+  - Migrated release notes to antsibull-changelog. ``CHANGELOG.rst`` is the
+    canonical generated changelog.

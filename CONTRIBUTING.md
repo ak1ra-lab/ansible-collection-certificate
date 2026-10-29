@@ -27,11 +27,12 @@ parent paths.
 ```shell
 uv run ruff check --fix .
 uv run ruff format .
-uv run mypy .
+uv run mypy tests/
 uv run ansible-lint
 uv run tox list --ansible
 uv run tox -e sanity-py3.13-2.21 --ansible
 uv run tox -e unit-py3.13-2.21 --ansible
+uv run antsibull-changelog lint
 ansible-galaxy collection build --output-path /tmp/collection-build
 uv run python -m galaxy_importer.main \
   --git-clone-path . --output-path /tmp/collection-import --print-result
@@ -138,7 +139,34 @@ deployed-artifact details. The collection must be installed in
 `.ansible/collections` first (the just recipes do that).
 
 ```shell
+just changelog-lint # antsibull-changelog fragment lint
 just docs-lint    # antsibull-docs lint-collection-docs
 just docs-build   # regenerate reference pages + sphinx-build -W
 just docs-serve   # http://127.0.0.1:8000
 ```
+
+## Releases
+
+Release order for the `ak1ra_lab` collections:
+
+1. `ak1ra_lab.general 0.4.0`
+2. `ak1ra_lab.certificate 0.1.0` (requires general `>=0.4.0`)
+3. `ak1ra_lab.network 0.4.0` (requires general `>=0.4.0`)
+
+Per release:
+
+1. Update `version` in `galaxy.yml` and run
+   `just changelog-release X.Y.Z` plus `just changelog-generate`.
+2. Run the full local gate: the lint/typecheck checks above, the supported
+   `ansible-test sanity`/unit environments, the release-scope Molecule
+   scenarios, and `just docs-build`.
+3. Build and inspect the artifact with `just build`; verify `meta/runtime.yml`
+   is in the tarball and run `galaxy-importer`.
+4. Commit the release and tag it `vX.Y.Z`. The tag must match `galaxy.yml`.
+5. Publish a GitHub release from that tag. The `Release` workflow runs in the
+   protected `release` environment, builds the collection, verifies the tag,
+   runs `galaxy-importer`, and publishes with `ANSIBLE_GALAXY_API_KEY`.
+   Do not publish from a local shell or a non-tag commit.
+
+The Galaxy API key is stored only as an environment secret on the protected
+`release` environment. The workflow does not push tags or create releases.
