@@ -1,0 +1,13 @@
+---
+# Collections required by the roles and by the Molecule scenarios.
+# ak1ra_lab.general is declared in galaxy.yml; list it here explicitly so an
+# execution environment built from this file resolves the same dependency.
+collections:
+  - name: ak1ra_lab.general
+    version: ">=0.4.0"
+  - name: community.general
+    version: ">=8.0.0"
+  - name: kubernetes.core
+    version: ">=6.0.0"
+  - name: containers.podman
+  - name: community.docker

@@ -1,0 +1,45 @@
+[project]
+name = "ansible-collection-certificate"
+version = "0.1.0"
+description = "Development tooling for the ak1ra_lab.certificate Ansible collection"
+requires-python = ">=3.11"
+dependencies = []
+
+[tool.uv]
+package = false
+
+[dependency-groups]
+# Shared Ansible runtime: ansible-galaxy reads galaxy.yml through distlib
+# when installing the collection from source.
+ansible = [
+    "ansible-core>=2.19.12",
+    "distlib>=0.4.4",
+]
+lint = [
+    { include-group = "ansible" },
+    "ansible-lint>=26.8.0",
+    "antsibull-changelog>=0.32.0",
+    "mypy>=1.18.0",
+    "ruff>=0.17.0",
+]
+molecule = [
+    { include-group = "ansible" },
+    "molecule>=26.8.0",
+]
+dev = [
+    { include-group = "lint" },
+    { include-group = "molecule" },
+    "pre-commit>=4.2.0",
+]
+
+# The collection currently ships roles and Jinja templates only. mypy still
+# covers the Python test helpers as soon as they are added.
+[tool.mypy]
+python_version = "3.11"
+check_untyped_defs = true
+disallow_untyped_defs = true
+no_implicit_optional = true
+show_error_codes = true
+warn_redundant_casts = true
+warn_unused_configs = true
+warn_unused_ignores = true

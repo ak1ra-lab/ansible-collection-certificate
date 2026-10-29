@@ -1,0 +1,3 @@
+# Controller-side Python requirements for ak1ra_lab.certificate.
+# cert_manager uses kubernetes.core, which imports the Kubernetes client.
+kubernetes>=24.2.0

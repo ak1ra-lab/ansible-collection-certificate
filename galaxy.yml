@@ -1,0 +1,53 @@
+---
+# See https://docs.ansible.com/ansible/latest/dev_guide/collections_galaxy_meta.html
+
+namespace: ak1ra_lab
+name: certificate
+version: 0.1.0
+readme: README.md
+authors:
+  - ak1ra <ak1ra.komj@gmail.com>
+description: TLS, ACME and cert-manager lifecycle roles for ak1ra-lab hosts and clusters.
+license:
+  - GPL-3.0-or-later
+license_file: LICENSE
+tags:
+  - acme
+  - certificates
+  - certbot
+  - certmanager
+  - dns
+  - kubernetes
+  - letsencrypt
+  - tls
+dependencies:
+  ak1ra_lab.general: ">=0.4.0"
+  community.general: ">=8.0.0"
+  kubernetes.core: ">=6.0.0"
+repository: https://github.com/ak1ra-lab/ansible-collection-certificate
+documentation: https://ak1ra-lab.github.io/ansible-collection-certificate/
+homepage: https://github.com/ak1ra-lab/ansible-collection-certificate
+issues: https://github.com/ak1ra-lab/ansible-collection-certificate/issues
+
+# Keep local development state, generated artifacts and consumer inventory out
+# of the Galaxy artifact. `ansible-galaxy collection build` always excludes
+# galaxy.yml, .git and Python cache files.
+build_ignore:
+  - .agents
+  - .ansible
+  - .cache
+  - .github
+  - .molecule
+  - .mypy_cache
+  - .pytest_cache
+  - .ruff_cache
+  - .tox
+  - .venv
+  - config
+  - playbooks/group_vars
+  - playbooks/host_vars
+  - site
+  - tests/output
+  - uv.lock
+  - changelogs/.plugin-cache.yaml
+  - "*.tar.gz"

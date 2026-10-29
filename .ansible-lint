@@ -1,0 +1,17 @@
+---
+# .ansible-lint
+
+profile: production
+
+exclude_paths:
+  - .git/
+  - .agents/
+  - .ansible/
+  - .molecule/
+  - .tox/
+  - .venv/
+  - docs/
+  - site/
+
+skip_list:
+  - name[casing]
