@@ -8,8 +8,8 @@ and `go` on the controller for the `acme_dns` role's `go_build` dependency.
 ```shell
 uv sync --group dev
 mkdir -p .ansible/collections
-uv run ansible-galaxy collection install --force -p .ansible/collections .
-uv run ansible-galaxy collection install -p .ansible/collections \
+uv run ansible-galaxy collection install --force --no-deps -p .ansible/collections .
+uv run ansible-galaxy collection install --no-deps -p .ansible/collections \
   ak1ra_lab.general community.general kubernetes.core
 ```
 
@@ -71,8 +71,11 @@ The managed nodes are the Debian 12/13 systemd images from
 
 ```shell
 # First run only: install the collection under test and its dependencies.
-uv run ansible-galaxy collection install --force -p .ansible/collections .
-uv run ansible-galaxy collection install -r requirements.yml -p .ansible/collections
+# --no-deps avoids resolving the not-yet-published ak1ra_lab.general 0.4.0
+# from Galaxy; install general from its checkout as shown above.
+uv run ansible-galaxy collection install --force --no-deps -p .ansible/collections .
+uv run ansible-galaxy collection install --no-deps -p .ansible/collections \
+  community.general kubernetes.core containers.podman community.docker
 
 # The shared lifecycle scenario and the flat component scenarios.
 uv run molecule test --all

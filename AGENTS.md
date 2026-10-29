@@ -28,9 +28,13 @@ running playbooks:
 
 ```shell
 mkdir -p .ansible/collections
-uv run ansible-galaxy collection install --force -p .ansible/collections .
-uv run ansible-galaxy collection install -p .ansible/collections ak1ra_lab.general community.general kubernetes.core
+uv run ansible-galaxy collection install --force --no-deps -p .ansible/collections .
+uv run ansible-galaxy collection install --no-deps -p .ansible/collections ak1ra_lab.general community.general kubernetes.core
 ```
+
+`--no-deps` keeps the local checkout from resolving the not-yet-published
+`ak1ra_lab.general >=0.4.0` dependency from Galaxy; install the general
+collection separately from its checkout until that release exists.
 
 `requirements.yml` lists the collections needed by the roles and the Molecule
 container lifecycle. `requirements.txt` lists the controller-side Python
