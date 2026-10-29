@@ -63,6 +63,14 @@ with the dependency removed. Never publish or commit that modification.
 - Role metadata uses `license: GPL-3.0-or-later` and
   `min_ansible_version: "2.19"`.
 
+## Documentation
+
+The Sphinx site under `docs/docsite/` is generated from the role argument specs
+in `roles/<role>/meta/argument_specs.yml`. Role READMEs keep narrative and
+deployed-artifact details. Use `just docs-lint` and `just docs-build`; the
+latter regenerates the reference pages and runs `sphinx-build -W`. Do not edit
+the generated `*_role.rst` pages by hand.
+
 ## Testing (Molecule)
 
 Scenarios are flat under `extensions/molecule/`:

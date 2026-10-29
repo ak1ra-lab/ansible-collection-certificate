@@ -11,7 +11,7 @@ default:
     @just --list --unsorted
 
 # Run all available recipes
-all: lint typecheck unit-test ansible-lint
+all: lint typecheck unit-test ansible-lint docs-lint docs-build
 
 # Sync development dependencies (may update uv.lock if pyproject.toml changed)
 sync *ARGS:
@@ -54,6 +54,25 @@ ansible-lint:
 build:
     uv run ansible-galaxy collection build --force --output-path dist
 
+# Remove generated Sphinx output and antsibull-docs reference pages
+docs-clean:
+    rm -rf docs/docsite/_build
+    rm -f docs/docsite/rst/collection_index.rst docs/docsite/rst/environment_variables.rst
+    rm -f docs/docsite/rst/*_role.rst docs/docsite/rst/*_module.rst docs/docsite/rst/*_lookup.rst docs/docsite/rst/*_filter.rst
+
+# Lint collection documentation with antsibull-docs
+docs-lint: ansible-collection-install docs-clean
+    uv run --group docs antsibull-docs lint-collection-docs --plugin-docs --validate-collection-refs self .
+
+# Regenerate the role reference pages and build the Sphinx site into
+# docs/docsite/_build/html
+docs-build: ansible-collection-install docs-clean
+    ANSIBLE_COLLECTIONS_PATH="$PWD/.ansible/collections" uv run --group docs bash docs/docsite/build.sh
+
+# Serve the last Sphinx build locally on http://127.0.0.1:8000
+docs-serve: docs-build
+    uv run --group docs python -m http.server 8000 -d docs/docsite/_build/html
+
 # Run every Molecule scenario.  Scenarios are flat and each one owns its
 # containers; controller-only scenarios create none.
 molecule-test:
@@ -73,6 +92,6 @@ molecule-list:
 
 # Remove build artifacts
 clean:
-    rm -rf .ansible/ .molecule/ .cache/ .pytest_cache/ .ruff_cache/ dist/ site/
+    rm -rf .ansible/ .molecule/ .cache/ .pytest_cache/ .ruff_cache/ dist/ site/ docs/docsite/_build/
     find . -type f -name "*.pyc" -delete
     find . -type d -name "__pycache__" -delete

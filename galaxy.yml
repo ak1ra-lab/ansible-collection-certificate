@@ -56,6 +56,7 @@ build_ignore:
   - pyproject.toml
   - ruff.toml
   - site
+  - docs/docsite/_build
   - tests/output
   - uv.lock
   - changelogs/.plugin-cache.yaml

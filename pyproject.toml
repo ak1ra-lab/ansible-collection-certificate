@@ -28,6 +28,13 @@ test = [
     "tox>=4.2",
     "tox-ansible>=26.10.0",
 ]
+docs = [
+    { include-group = "ansible" },
+    "antsibull-docs>=2.28,<3",
+    "ansible-pygments>=0.1.1",
+    "sphinx>=8,<10",
+    "sphinx-ansible-theme>=0.10.3",
+]
 molecule = [
     { include-group = "ansible" },
     "molecule>=26.8.0",
@@ -35,6 +42,7 @@ molecule = [
 dev = [
     { include-group = "lint" },
     { include-group = "test" },
+    { include-group = "docs" },
     { include-group = "molecule" },
     "pre-commit>=4.2.0",
 ]

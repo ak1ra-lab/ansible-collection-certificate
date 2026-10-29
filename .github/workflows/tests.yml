@@ -68,6 +68,48 @@ jobs:
           uv run --no-sync ruff format --check .
           uv run --no-sync mypy .
 
+  docs:
+    name: Docs
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Check out the unpublished general collection
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: ak1ra-lab/ansible-collection-general
+          ref: reorg/collections-2026-10
+          path: .deps/ansible-collection-general
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.13"
+      - name: Install uv
+        uses: astral-sh/setup-uv@18d369b23da25a81e9458561248e1aafff6a70fa # v10.3.1
+      - name: Sync the lint and docs dependencies
+        run: uv sync --locked --no-dev --group lint --group docs
+      - name: Install the collections without Galaxy dependency resolution
+        run: |
+          mkdir -p .ansible/collections
+          uv run --no-sync ansible-galaxy collection install \
+            --force --no-deps -p .ansible/collections .
+          uv run --no-sync ansible-galaxy collection install \
+            --no-deps -p .ansible/collections .deps/ansible-collection-general
+      - name: Lint collection documentation
+        env:
+          ANSIBLE_COLLECTIONS_PATH: ${{ github.workspace }}/.ansible/collections
+        run: >-
+          uv run --no-sync antsibull-docs lint-collection-docs
+          --plugin-docs --validate-collection-refs self .
+      - name: Build the Sphinx documentation site
+        env:
+          ANSIBLE_COLLECTIONS_PATH: ${{ github.workspace }}/.ansible/collections
+        run: uv run --no-sync bash docs/docsite/build.sh
+
   build-import:
     name: Build and import
     runs-on: ubuntu-24.04

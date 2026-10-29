@@ -16,8 +16,10 @@ Documentation: <https://ak1ra-lab.github.io/ansible-collection-certificate/>
 | [`certbot`](roles/certbot/README.md) | Obtain and renew certificates with certbot from apt, PyPI, or an external binary. |
 | [`cert_manager`](roles/cert_manager/README.md) | Install cert-manager and declare ACME `ClusterIssuer` resources with per-issuer solvers. |
 
-The role READMEs are the canonical variable contracts. The docs site renders
-them as the role reference.
+The role argument specs (`roles/<role>/meta/argument_specs.yml`) are the
+canonical variable contracts; the role READMEs keep narrative and deployed
+artifact details. The docs site renders the argument specs as the role
+reference.
 
 ## Requirements
 
@@ -69,6 +71,8 @@ uv run ansible-lint
 uv run tox list --ansible
 uv run tox -e sanity-py3.13-2.21 --ansible
 uv run tox -e unit-py3.13-2.21 --ansible
+just docs-lint
+just docs-build
 ```
 
 `ansible-test sanity` runs through tox-ansible for ansible-core

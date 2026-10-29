@@ -1,0 +1,9 @@
+---
+sections:
+  - title: User guide
+    toctree:
+      - ref: getting-started
+      - ref: architecture
+      - ref: playbooks
+      - ref: contributing
+      - ref: changelog
