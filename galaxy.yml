@@ -18,6 +18,8 @@ tags:
   - dns
   - kubernetes
   - letsencrypt
+  - linux
+  - security
   - tls
 dependencies:
   ak1ra_lab.general: ">=0.4.0"
