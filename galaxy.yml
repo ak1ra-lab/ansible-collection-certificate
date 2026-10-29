@@ -10,7 +10,6 @@ authors:
 description: TLS, ACME and cert-manager lifecycle roles for ak1ra-lab hosts and clusters.
 license:
   - GPL-3.0-or-later
-license_file: LICENSE
 tags:
   - acme
   - certificates
