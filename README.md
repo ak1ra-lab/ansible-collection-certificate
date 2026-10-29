@@ -66,8 +66,17 @@ including that path at the front of `collections_path`.
 ```shell
 uv sync --group dev
 uv run ansible-lint
-uv run ansible-test sanity --docker
+uv run tox list --ansible
+uv run tox -e sanity-py3.13-2.21 --ansible
+uv run tox -e unit-py3.13-2.21 --ansible
 ```
+
+`ansible-test sanity` runs through tox-ansible for ansible-core
+2.19/2.20/2.21 plus the weekly devel/milestone environments. Until
+`ak1ra_lab.general 0.4.0` is published, ADE cannot resolve the dependency and
+the temporary local-checkout bridge in
+[CONTRIBUTING.md](CONTRIBUTING.md#temporary-local-bridge-for-the-unpublished-general-collection)
+applies.
 
 Molecule scenarios live under `extensions/molecule/` and need a rootful Podman
 or Docker daemon. They are run separately from the lint/sanity gates. See

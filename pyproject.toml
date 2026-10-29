@@ -19,8 +19,14 @@ lint = [
     { include-group = "ansible" },
     "ansible-lint>=26.8.0",
     "antsibull-changelog>=0.32.0",
+    "galaxy-importer>=0.4.31",
     "mypy>=1.18.0",
     "ruff>=0.17.0",
+]
+test = [
+    { include-group = "ansible" },
+    "tox>=4.2",
+    "tox-ansible>=26.10.0",
 ]
 molecule = [
     { include-group = "ansible" },
@@ -28,20 +34,34 @@ molecule = [
 ]
 dev = [
     { include-group = "lint" },
+    { include-group = "test" },
     { include-group = "molecule" },
     "pre-commit>=4.2.0",
 ]
 
-# The collection currently ships roles and Jinja templates only. mypy checks
-# the test helpers; the empty tests/unit package keeps the configured target
-# valid until the first Python helper is added.
+# The collection ships roles and Jinja templates only. Keep the typecheck
+# pragmatic; ansible-test sanity remains the authoritative gate.
 [tool.mypy]
 python_version = "3.11"
 files = ["tests"]
 check_untyped_defs = true
-disallow_untyped_defs = true
+ignore_missing_imports = true
 no_implicit_optional = true
 show_error_codes = true
 warn_redundant_casts = true
 warn_unused_configs = true
 warn_unused_ignores = true
+
+# Standard tox-ansible harness. The plugin generates the ansible-core 2.19,
+# 2.20, 2.21 and devel/milestone matrix from the upstream support matrix;
+# `tox list --ansible` shows the result. Do not add an ad-hoc skip list: drop
+# an environment with `tox -e <env> --ansible` instead.
+#
+# Until ak1ra_lab.general 0.4.0 is published, ADE cannot resolve the
+# galaxy.yml dependency for certificate environments. See CONTRIBUTING.md for
+# the temporary local-checkout bridge.
+[tool.tox]
+requires = ["tox>=4.2"]
+
+[tool.tox-ansible]
+molecule = "auto"

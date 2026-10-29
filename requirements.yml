@@ -1,7 +1,9 @@
 ---
-# Collections required by the roles and by the Molecule scenarios.
-# ak1ra_lab.general is declared in galaxy.yml; list it here explicitly so an
+# Runtime collection dependencies for an ansible-builder execution
+# environment. ak1ra_lab.general is declared in galaxy.yml as well so an
 # execution environment built from this file resolves the same dependency.
+# Test-only collections (containers.podman, community.docker) live in
+# tests/molecule/requirements.yml.
 collections:
   - name: ak1ra_lab.general
     version: ">=0.4.0"
@@ -9,5 +11,3 @@ collections:
     version: ">=8.0.0"
   - name: kubernetes.core
     version: ">=6.0.0"
-  - name: containers.podman
-  - name: community.docker

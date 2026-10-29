@@ -14,9 +14,12 @@ human contributor workflow.
 - Env/deps: **uv** (`uv sync --group dev`). Never `pip`/`poetry`.
 - Lint+format: **ruff** (`uv run ruff check --fix .` and
   `uv run ruff format .`). Never `black`/`isort`/`flake8`.
-- Typecheck: **mypy** (configured in `pyproject.toml`). `ty` is not used.
+- Typecheck: **mypy** with the pragmatic config in `pyproject.toml`.
+  `ansible-test sanity` remains the authoritative gate; `ty` is not used.
 - Ansible lint: `uv run ansible-lint` (production profile).
-- Tests: `ansible-test sanity` and Molecule. Never add `pytest-ansible`.
+- Tests: **tox-ansible** (`uv run tox list --ansible`, then
+  `uv run tox -e sanity-py3.13-2.21 --ansible` or
+  `unit-py3.13-2.21`). Molecule stays separate. Never add `pytest-ansible`.
 
 ## Ansible layout
 
@@ -38,7 +41,14 @@ collection separately from its checkout until that release exists.
 
 `requirements.yml` lists the collections needed by the roles and the Molecule
 container lifecycle. `requirements.txt` lists the controller-side Python
-packages (`kubernetes`).
+packages (`kubernetes`); `meta/execution-environment.yml` feeds both to
+ansible-builder. `tests/molecule/requirements.yml` holds only the additional
+test collections and is installed by tox-ansible/ade.
+
+Tox-ansible cannot resolve the unpublished general dependency through ADE.
+The temporary local bridge is documented in `CONTRIBUTING.md`: use a real
+collection-layout copy and run `ansible-test` directly, or a temporary copy
+with the dependency removed. Never publish or commit that modification.
 
 ## Role contracts
 
@@ -69,6 +79,10 @@ collection into `.ansible/collections` before running a scenario.
 
 `galaxy.yml` uses `build_ignore` (not `manifest`). Keep local state out of the
 artifact: `.agents`, `.ansible`, `.venv`, `site`, `tests/output`,
-`playbooks/host_vars`, `playbooks/group_vars`, `config`. `meta/runtime.yml`
-must remain in the tarball; CI checks it after `ansible-galaxy collection
-build`.
+`playbooks/host_vars`, `playbooks/group_vars`, `config`, plus repository-only
+tooling (`.github`, `.pre-commit-config.yaml`, `ansible.cfg`, `pyproject.toml`,
+`ruff.toml`, `importer_result.json`). `requirements.yml` stays because
+`meta/execution-environment.yml` references it. `meta/runtime.yml`,
+`README.md`, `LICENSE`, and `CHANGELOG.rst` must remain in the tarball; CI
+checks them after `ansible-galaxy collection build` and runs
+`galaxy-importer`.

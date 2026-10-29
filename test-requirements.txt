@@ -1,4 +1,0 @@
-# Python packages required by the Molecule test harness.
-# pytest-ansible is intentionally not used; ansible-test sanity/units and
-# Molecule are the test gates.
-molecule

@@ -36,17 +36,25 @@ issues: https://github.com/ak1ra-lab/ansible-collection-certificate/issues
 build_ignore:
   - .agents
   - .ansible
+  - .ansible-lint
   - .cache
+  - .gitignore
   - .github
   - .molecule
   - .mypy_cache
+  - .pre-commit-config.yaml
   - .pytest_cache
   - .ruff_cache
   - .tox
   - .venv
+  - ansible.cfg
+  - collections
   - config
+  - importer_result.json
   - playbooks/group_vars
   - playbooks/host_vars
+  - pyproject.toml
+  - ruff.toml
   - site
   - tests/output
   - uv.lock
