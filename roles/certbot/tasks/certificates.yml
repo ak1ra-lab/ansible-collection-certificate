@@ -41,7 +41,7 @@
           {{ ['--webroot', '--webroot-path', certbot_webroot_path] }}
 
     - name: obtain each certificate
-      ansible.builtin.include_tasks: certificate.yaml
+      ansible.builtin.include_tasks: certificate.yml
       loop: "{{ certbot_certificates }}"
       loop_control:
         loop_var: cert

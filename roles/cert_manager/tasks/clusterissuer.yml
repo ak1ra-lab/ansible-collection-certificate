@@ -7,4 +7,4 @@
     _cert_manager_manifest_filename: "clusterissuer-{{ issuer.name }}.yaml"
 
 - name: render and apply the ClusterIssuer
-  ansible.builtin.include_tasks: manifest.yaml
+  ansible.builtin.include_tasks: manifest.yml

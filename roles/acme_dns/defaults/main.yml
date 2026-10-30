@@ -92,7 +92,7 @@ acme_dns_install_dir: "/usr/local/bin"
 # ── go_build parameters ──────────────────────────────────────────────────────
 
 # The upstream URL, package, static mode, target OS, and systemd service/unit
-# names are internal constants in vars/main.yaml.
+# names are internal constants in vars/main.yml.
 # Release tag to build; override to test another acme-dns release.
 acme_dns_go_build_repo_version: "v2.0.2"
 # Target architecture and local build cache on the controller.

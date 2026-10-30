@@ -6,7 +6,7 @@ Getting started
 Install the collection
 ----------------------
 
-Create a ``requirements.yaml`` in the consuming repository:
+Create a ``requirements.yml`` in the consuming repository:
 
 .. code-block:: yaml
 
@@ -19,7 +19,7 @@ Install into the project-local collections path:
 
 .. code-block:: shell
 
-   ansible-galaxy collection install -r requirements.yaml -p ./.ansible/collections
+   ansible-galaxy collection install -r requirements.yml -p ./.ansible/collections
 
 ``0.1.0`` is the first Galaxy release. Galaxy resolves
 ``ak1ra_lab.general >= 0.4.0``, ``community.general``, and

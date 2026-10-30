@@ -35,13 +35,13 @@
 # facts instead.
 
 - name: load the persisted account registry
-  ansible.builtin.import_tasks: load.yaml
+  ansible.builtin.import_tasks: load.yml
 
 - name: validate the role inputs
-  ansible.builtin.import_tasks: validate.yaml
+  ansible.builtin.import_tasks: validate.yml
 
 - name: register or reuse acme-dns accounts
-  ansible.builtin.import_tasks: register.yaml
+  ansible.builtin.import_tasks: register.yml
 
 - name: ensure Cloudflare CNAME records
   when:
@@ -49,11 +49,11 @@
     - >-
       acme_dns_register_cloudflare_api_token | length > 0
       or acme_dns_register_cloudflare_zone_token | length > 0
-  ansible.builtin.import_tasks: cname_cloudflare.yaml
+  ansible.builtin.import_tasks: cname_cloudflare.yml
 
 - name: show the CNAME records after a fresh registration
   when:
     - acme_dns_register_new_domains | length > 0
     - acme_dns_register_cloudflare_api_token | length == 0
     - acme_dns_register_cloudflare_zone_token | length == 0
-  ansible.builtin.import_tasks: cname_manual.yaml
+  ansible.builtin.import_tasks: cname_manual.yml

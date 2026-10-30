@@ -58,7 +58,7 @@ setup into a self-delegation.
 | `acme_dns_go_build_repo_version` / `acme_dns_go_build_goarch` / `acme_dns_go_build_base_dir` | see defaults | Build overrides passed to `go_build` |
 
 The upstream repository URL, package path, static mode, target OS, and the
-systemd service/unit names are internal constants in `vars/main.yaml`.
+systemd service/unit names are internal constants in `vars/main.yml`.
 
 `acme_dns_zone` maps to acme-dns's `general.domain`. It is the zone that holds
 the `_acme-challenge` TXT records and, with `acme_dns_api_tls: letsencrypt`,

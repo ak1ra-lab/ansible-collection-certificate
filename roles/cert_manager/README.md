@@ -244,7 +244,7 @@ same definitions are also applied to the cluster.
 
 ## Variables
 
-See `defaults/main.yaml` for the full list. The most important ones:
+See `defaults/main.yml` for the full list. The most important ones:
 
 | Variable | Default | Description |
 | --- | --- | --- |

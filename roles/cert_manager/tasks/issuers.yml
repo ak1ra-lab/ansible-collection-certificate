@@ -10,14 +10,14 @@
   run_once: true
 
 - name: render and apply the managed secrets
-  ansible.builtin.include_tasks: secret.yaml
+  ansible.builtin.include_tasks: secret.yml
   loop: "{{ (_cert_manager_secret_entries | default({})).values() | list }}"
   loop_control:
     loop_var: secret
     label: "{{ secret.name }}"
 
 - name: render and apply the ClusterIssuers
-  ansible.builtin.include_tasks: clusterissuer.yaml
+  ansible.builtin.include_tasks: clusterissuer.yml
   loop: "{{ cert_manager_cluster_issuers }}"
   loop_control:
     loop_var: issuer

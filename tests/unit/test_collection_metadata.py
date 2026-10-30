@@ -44,10 +44,10 @@ def test_runtime_requires_supported_ansible_core() -> None:
 
 
 def test_every_role_requires_supported_ansible_core() -> None:
-    roles = sorted(path.parent.parent.name for path in (REPO_ROOT / "roles").glob("*/meta/main.yaml"))
+    roles = sorted(path.parent.parent.name for path in (REPO_ROOT / "roles").glob("*/meta/main.yml"))
 
     assert roles == ["acme_dns", "acme_dns_register", "cert_manager", "certbot"]
     for role in roles:
-        meta = load_yaml(f"roles/{role}/meta/main.yaml")
+        meta = load_yaml(f"roles/{role}/meta/main.yml")
         assert meta["galaxy_info"]["min_ansible_version"] == "2.19"
         assert meta["galaxy_info"]["license"] == "GPL-3.0-or-later"
