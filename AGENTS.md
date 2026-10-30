@@ -29,34 +29,18 @@ human contributor workflow.
 `ansible.cfg` pins `roles_path=./roles` and
 `collections_path=./.ansible/collections` and does not reach user-level or
 parent paths. The certificate roles reference `ak1ra_lab.general` helpers, so
-install both collections into the project-local path before linting or
-running playbooks:
+install the collection and its Galaxy dependencies into the project-local path
+before linting or running playbooks:
 
 ```shell
 just ansible-collection-install
 ```
 
-The recipe installs the collection under test and the sibling
-`../ansible-collection-general` checkout with `--no-deps`. That local copy is
-the temporary bridge until `ak1ra_lab.general 0.4.0` is published; Galaxy
-resolves the real dependency after the first release.
-
 `requirements.yml` lists the collections needed by the roles and the Molecule
 container lifecycle. `requirements.txt` lists the controller-side Python
 packages (`kubernetes`); `meta/execution-environment.yml` feeds both to
 ansible-builder. `tests/molecule/requirements.yml` holds only the additional
 test collections and is installed by tox-ansible/ade.
-
-`requirements.yml` lists the collections needed by the roles and the Molecule
-container lifecycle. `requirements.txt` lists the controller-side Python
-packages (`kubernetes`); `meta/execution-environment.yml` feeds both to
-ansible-builder. `tests/molecule/requirements.yml` holds only the additional
-test collections and is installed by tox-ansible/ade.
-
-Tox-ansible cannot resolve the unpublished general dependency through ADE.
-The temporary local bridge is documented in `CONTRIBUTING.md`: use a real
-collection-layout copy and run `ansible-test` directly, or a temporary copy
-with the dependency removed. Never publish or commit that modification.
 
 ## Role contracts
 
@@ -90,10 +74,10 @@ include the scenario name and a checkout hash. `acme_dns_register_basic` and
 `default` lifecycle scenario, no `shared_state`, and no `MOLECULE_GLOB`.
 
 Molecule's dependency action installs `tests/molecule/requirements.yml` and
-ansible-compat's prerun installs the collection under test. Do not pre-install
-the test collections or the collection under test for Molecule. The
-`just ansible-collection-install` recipe remains for lint/mypy/docs and copies
-the unpublished general checkout as a temporary resolver bridge.
+ansible-compat's prerun installs the collection under test and its `galaxy.yml`
+dependencies from Galaxy. Do not pre-install the test collections or the
+collection under test for Molecule. The `just ansible-collection-install`
+recipe remains for lint/mypy/docs only.
 
 Molecule caches scenario state, so a changed `molecule.yml` needs
 `molecule reset` (or `destroy`).

@@ -38,7 +38,7 @@ reference.
 
 `ak1ra_lab.certificate` depends on `ak1ra_lab.general` for `go_build`,
 `pyproject_install`, and `github_releases_info`. Galaxy resolves that
-dependency automatically once general `0.4.0` is published.
+dependency automatically.
 
 ## Install
 
@@ -62,12 +62,10 @@ ansible-galaxy collection install -r requirements.yml
 ```
 
 Galaxy also installs `ak1ra_lab.general >= 0.4.0`, `community.general`, and
-`kubernetes.core`. The `0.1.0` release is the first Galaxy release; until it
-is published, install from a Git tag or commit and pin the revision instead of
-following a branch.
+`kubernetes.core`. The `0.1.0` release is the first Galaxy release.
 
 See [Getting started](docs/docsite/rst/getting-started.rst) for control-node
-dependencies and the temporary local general checkout used for development.
+requirements.
 
 ## Versioning and deprecation
 
@@ -114,11 +112,9 @@ just docs-build
 ```
 
 `ansible-test sanity` runs through tox-ansible for ansible-core
-2.19/2.20/2.21 plus the weekly devel/milestone environments. Until
-`ak1ra_lab.general 0.4.0` is published, ADE cannot resolve the dependency and
-the temporary local-checkout bridge in
-[CONTRIBUTING.md](CONTRIBUTING.md#temporary-local-bridge-for-the-unpublished-general-collection)
-applies.
+2.19/2.20/2.21 plus the weekly devel/milestone environments. Tox-ansible
+resolves the `galaxy.yml` dependencies, including `ak1ra_lab.general`, from
+Galaxy.
 
 Molecule scenarios are flat under `extensions/molecule/`, each one owns its
 containers, and the suite needs Podman (rootless locally; CI uses rootful) or

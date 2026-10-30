@@ -5,7 +5,7 @@ Contributing
 
 Development setup, the tox-ansible matrix, and the Molecule workflow are
 documented in the repository's `CONTRIBUTING.md
-<https://github.com/ak1ra-lab/ansible-collection-certificate/blob/main/CONTRIBUTING.md>`_.
+<https://github.com/ak1ra-lab/ansible-collection-certificate/blob/master/CONTRIBUTING.md>`_.
 
 Common commands
 ---------------
@@ -21,21 +21,10 @@ Common commands
    just docs-lint     # antsibull-docs lint-collection-docs
    just docs-build    # regenerate reference pages and build Sphinx
 
-Temporary local bridge for the unpublished general collection
--------------------------------------------------------------
-
-Until ``ak1ra_lab.general 0.4.0`` is published, install the sibling checkout
-into the project-local collections path before lint, mypy, or docs:
-
-.. code-block:: shell
-
-   just ansible-collection-install
-   # or:
-   ansible-galaxy collection install --force --no-deps \
-     -p .ansible/collections ../ansible-collection-general
-
-Molecule installs the collection under test and its test requirements itself;
-the local bridge is not used for Molecule.
+``just ansible-collection-install`` installs the collection and its Galaxy
+dependencies into the project-local collections path before lint, mypy, or
+docs. Molecule installs the collection under test and its test requirements
+itself.
 
 Documentation sources
 ---------------------

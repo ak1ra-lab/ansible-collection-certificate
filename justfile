@@ -1,11 +1,3 @@
-# Path to the ak1ra_lab.general collection checkout.  The collection is not
-# on Galaxy yet (install it from git, see README.md), and local lint/test
-# bootstrap uses this sibling checkout; override it from worktrees or other
-# layouts:
-#   just GENERAL_COLLECTION=/path/to/ansible-collection-general \
-#     ansible-collection-install
-GENERAL_COLLECTION := env_var_or_default('GENERAL_COLLECTION', '../ansible-collection-general')
-
 # Show available recipes
 default:
     @just --list --unsorted
@@ -38,13 +30,12 @@ tox env='sanity-py3.13-2.21':
 unit-test:
     uv run tox -e unit-py3.13-2.21 --ansible
 
-# Install the collections into the project-local path for lint, mypy and docs
-# only.  Molecule installs the collection under test and its test
-# requirements itself.
+# Install the collection and its Galaxy dependencies into the project-local
+# path for lint, mypy and docs only.  Molecule installs the collection under
+# test and its test requirements itself.
 ansible-collection-install:
     mkdir -p .ansible/collections
-    uv run ansible-galaxy collection install --force --no-deps -p .ansible/collections .
-    uv run ansible-galaxy collection install --no-deps -p .ansible/collections "{{GENERAL_COLLECTION}}"
+    uv run ansible-galaxy collection install --force --collections-path .ansible/collections .
 
 # Lint all Ansible content with ansible-lint (production profile)
 ansible-lint:

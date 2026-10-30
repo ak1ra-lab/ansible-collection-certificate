@@ -10,13 +10,9 @@ just sync
 just ansible-collection-install
 ```
 
-The collection under test depends on `ak1ra_lab.general`, which is not on
-Galaxy before the `0.4.0` release. The install recipe copies it from the
-sibling checkout (`GENERAL_COLLECTION`, default
-`../ansible-collection-general`) into `.ansible/collections` with `--no-deps`
-so lint, mypy, docs, and standalone Molecule can resolve it. This copy is a
-temporary bridge until general is published; tox-ansible/ade still cannot
-resolve the dependency from Galaxy.
+`just ansible-collection-install` installs the collection and its Galaxy
+dependencies, including `ak1ra_lab.general`, into `.ansible/collections` so
+lint, mypy, and docs resolve them.
 
 The repository's `ansible.cfg` pins `roles_path=./roles` and
 `collections_path=./.ansible/collections`; it does not read user-level or
@@ -42,34 +38,6 @@ uv run python -m galaxy_importer.main \
 through tox-ansible. `[tool.tox]`/`[tool.tox-ansible]` in `pyproject.toml`
 define the ansible-core 2.19/2.20/2.21 plus weekly devel/milestone matrix;
 there is no hand-maintained skip list.
-
-### Temporary local bridge for the unpublished general collection
-
-ADE (used by tox-ansible) resolves the `ak1ra_lab.general >=0.4.0` dependency
-declared in `galaxy.yml` from Galaxy, so certificate tox-ansible environments
-fail before the first general 0.4.0 release:
-
-```text
-[ERROR]: Failed to resolve the requested dependencies map. Could not satisfy
-the following requirements: * ak1ra_lab.general:>=0.4.0 (direct request)
-```
-
-Until general 0.4.0 is published, validate locally with a temporary
-collection-layout copy that has the general dependency removed, or run
-`ansible-test` directly in a real (not symlinked) collection-layout copy:
-
-```shell
-work=$(mktemp -d)
-mkdir -p "$work/ansible_collections/ak1ra_lab"
-cp -a . "$work/ansible_collections/ak1ra_lab/certificate"
-cp -a ../ansible-collection-general \
-  "$work/ansible_collections/ak1ra_lab/general"
-cd "$work/ansible_collections/ak1ra_lab/certificate"
-uv run ansible-test sanity --python 3.13
-uv run ansible-test units --python 3.13
-```
-
-Do not publish a modified `galaxy.yml`; the real dependency stays in place.
 
 Python changes must pass ruff, ruff format and mypy. Ansible changes must pass
 ansible-lint, `ansible-test sanity` and the relevant Molecule scenarios.
@@ -106,14 +74,8 @@ just molecule-list
 
 Molecule's dependency action installs `tests/molecule/requirements.yml`;
 ansible-compat's prerun installs the collection under test and its `galaxy.yml`
-dependencies. Do not pre-install the collection or test collections into
-`.ansible/collections` for Molecule.
-
-Until `ak1ra_lab.general 0.4.0` is published, the prerun resolver needs a
-local copy of general. `just ansible-collection-install` installs it from the
-sibling checkout (`GENERAL_COLLECTION`, default `../ansible-collection-general`)
-into `.ansible/collections`; CI checks out the branch instead. Once general is
-on Galaxy this bootstrap goes away.
+dependencies, including `ak1ra_lab.general`, from Galaxy. Do not pre-install
+the collection or test collections into `.ansible/collections` for Molecule.
 
 Podman is required. Rootless Podman works for the certificate scenarios; CI
 uses rootful Podman for a uniform systemd container runtime. A Docker daemon

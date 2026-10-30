@@ -21,17 +21,13 @@ Install into the project-local collections path:
 
    ansible-galaxy collection install -r requirements.yaml -p ./.ansible/collections
 
-``0.1.0`` is the first Galaxy release. Until it is published, install from a
-Git tag or commit and pin the revision instead of following a branch. Galaxy
-resolves ``ak1ra_lab.general >= 0.4.0``, ``community.general``, and
+``0.1.0`` is the first Galaxy release. Galaxy resolves
+``ak1ra_lab.general >= 0.4.0``, ``community.general``, and
 ``kubernetes.core`` from ``galaxy.yml`` automatically.
 
 For local development, ``just ansible-collection-install`` installs this
-collection and the sibling ``../ansible-collection-general`` checkout into
-``.ansible/collections``. Override the path with
-``GENERAL_COLLECTION=/path/to/checkout`` when working from a worktree. This is
-a temporary bridge until general ``0.4.0`` is published and is not part of the
-consumer install path.
+collection and its Galaxy dependencies into ``.ansible/collections`` for lint,
+mypy, and docs.
 
 Requirements
 ------------
@@ -49,15 +45,13 @@ Requirements
   ``kubernetes.core >= 6.0.0``. ``ansible-galaxy`` resolves them from
   ``galaxy.yml``.
 
-The unpublished ``ak1ra_lab.general`` dependency blocks ADE/tox-ansible
-resolution. See :doc:`contributing` for the temporary local-checkout bridge.
-
 Release order
 -------------
 
-``ak1ra_lab.general 0.4.0`` is published first, then
-``ak1ra_lab.certificate 0.1.0``, then ``ak1ra_lab.network 0.4.0``. Certificate
-depends on general ``>=0.4.0``; it does not depend on network.
+The ``ak1ra_lab`` collections are released in dependency order:
+``ak1ra_lab.general 0.4.0``, ``ak1ra_lab.certificate 0.1.0``, then
+``ak1ra_lab.network 0.4.0``. Certificate depends on general ``>=0.4.0``; it
+does not depend on network.
 
 Next steps
 ----------

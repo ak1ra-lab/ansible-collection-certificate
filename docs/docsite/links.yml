@@ -1,7 +1,7 @@
 ---
 edit_on_github:
   repository: ak1ra-lab/ansible-collection-certificate
-  branch: main
+  branch: master
   path_prefix: ""
 
 extra_links:

@@ -15,8 +15,7 @@ the acme-dns, certbot and cert-manager roles migrated with history from
 ``ak1ra_lab.general``, their Molecule scenarios, playbooks and role
 documentation.
 
-The collection depends on ``ak1ra_lab.general >= 0.4.0`` and must be
-released after general 0.4.0.
+The collection depends on ``ak1ra_lab.general >= 0.4.0``.
 
 Major Changes
 -------------

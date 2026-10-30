@@ -48,6 +48,6 @@ nitpicky = True
 html_context = {
     "github_user": "ak1ra-lab",
     "github_repo": "ansible-collection-certificate",
-    "github_version": "main",
+    "github_version": "master",
     "doc_path": "docs/docsite/rst",
 }
