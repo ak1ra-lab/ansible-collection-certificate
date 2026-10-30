@@ -1,0 +1,5 @@
+---
+minor_changes:
+  - Role READMEs now point to the generated variable reference instead of
+    duplicating the ``meta/argument_specs.yml`` tables, and keep only purpose,
+    deployed artifacts, operational notes, and examples.

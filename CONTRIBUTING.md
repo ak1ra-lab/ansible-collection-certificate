@@ -95,9 +95,10 @@ editing the generated file. The first release starts at `0.1.0`.
 
 ## Documentation
 
-The Sphinx site is generated from the role argument specs in
-`roles/<role>/meta/argument_specs.yml`; role READMEs keep narrative and
-deployed-artifact details. The collection must be installed in
+The role argument specs in `roles/<role>/meta/argument_specs.yml` are the
+canonical variable reference; the Sphinx site renders them as the generated
+role reference. Role READMEs keep purpose, deployed artifacts, and examples,
+not a duplicate of the variable tables. The collection must be installed in
 `.ansible/collections` first (the just recipes do that).
 
 ```shell

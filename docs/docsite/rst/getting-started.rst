@@ -45,6 +45,14 @@ Requirements
   ``kubernetes.core >= 6.0.0``. ``ansible-galaxy`` resolves them from
   ``galaxy.yml``.
 
+Role documentation
+------------------
+
+The role argument specs in ``roles/<role>/meta/argument_specs.yml`` are the
+canonical variable reference, and :doc:`collection_index` renders them as the
+generated role reference. Role READMEs keep purpose, deployed artifacts, and
+examples; they do not duplicate the variable tables.
+
 Release order
 -------------
 

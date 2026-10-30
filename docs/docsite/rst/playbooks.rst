@@ -7,6 +7,11 @@ Playbooks
 ``acme_dns_register``, ``certbot``, and ``cert_manager`` roles, but no runnable
 playbooks or scripts.
 
+The role argument specs in ``roles/<role>/meta/argument_specs.yml`` are the
+canonical variable reference, and :doc:`collection_index` renders them as the
+generated role reference. Role READMEs keep purpose, deployed artifacts, and
+examples; they do not duplicate the variable tables.
+
 The operational certificate playbooks live in the separate
 `ansible-playbooks-services <https://github.com/ak1ra-lab/ansible-playbooks-services>`_
 repository. Use that repository for inventories, site playbooks, and the

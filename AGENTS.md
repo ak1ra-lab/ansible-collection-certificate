@@ -46,8 +46,9 @@ test collections and is installed by tox-ansible/ade.
 
 ## Role contracts
 
-- Role variables use the `<role>_*` prefix; see each
-  `roles/<role>/README.md`.
+- Role variables use the `<role>_*` prefix; the canonical contract is each
+  `roles/<role>/meta/argument_specs.yml` (rendered as the generated role
+  reference). Role READMEs keep purpose, deployed artifacts, and examples.
 - Migrated roles keep their behavior; do not rewrite role internals during
   packaging or namespace changes.
 - FQCNs inside this repository must be `ak1ra_lab.certificate.<role>` for the
@@ -60,8 +61,8 @@ test collections and is installed by tox-ansible/ade.
 ## Documentation
 
 The Sphinx site under `docs/docsite/` is generated from the role argument specs
-in `roles/<role>/meta/argument_specs.yml`. Role READMEs keep narrative and
-deployed-artifact details. Use `just docs-lint` and `just docs-build`; the
+in `roles/<role>/meta/argument_specs.yml`. Role READMEs keep purpose, deployed
+artifacts, and examples. Use `just docs-lint` and `just docs-build`; the
 latter regenerates the reference pages and runs `sphinx-build -W`. Do not edit
 the generated `*_role.rst` pages by hand.
 

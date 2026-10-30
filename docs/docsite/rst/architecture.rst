@@ -4,8 +4,13 @@ Architecture
 ============
 
 The collection separates certificate issuance from certificate consumption.
-Roles expose narrow variable contracts; consumer playbooks compose them in the
-order their infrastructure requires.
+Role argument specs define narrow variable contracts; consumer playbooks
+compose the roles in the order their infrastructure requires.
+
+The role argument specs in ``roles/<role>/meta/argument_specs.yml`` are the
+canonical variable reference, and :doc:`collection_index` renders them as the
+generated role reference. Role READMEs keep purpose, deployed artifacts, and
+examples; they do not duplicate the variable tables.
 
 Role families
 -------------

@@ -18,9 +18,9 @@ Release notes: [CHANGELOG.rst](CHANGELOG.rst)
 | [`cert_manager`](roles/cert_manager/README.md) | Install cert-manager and declare ACME `ClusterIssuer` resources with per-issuer solvers. |
 
 The role argument specs (`roles/<role>/meta/argument_specs.yml`) are the
-canonical variable contracts; the role READMEs keep narrative and deployed
-artifact details. The docs site renders the argument specs as the role
-reference.
+canonical variable contracts, and the docs site renders them as the generated
+role reference. Role READMEs keep purpose, deployed artifacts, and examples;
+they do not duplicate the variable reference.
 
 ## Playbooks
 

@@ -1,8 +1,7 @@
 # acme_dns
 
-> The canonical variable reference for this role is
-> [`meta/argument_specs.yml`](meta/argument_specs.yml). This README keeps the
-> narrative and deployed-artifact details; update both when the contract changes.
+> The canonical variable reference is generated from
+> [`meta/argument_specs.yml`](meta/argument_specs.yml) in the collection documentation.
 
 Deploys an [acme-dns](https://github.com/acme-dns/acme-dns) server: a limited DNS
 server with a RESTful HTTP API for handling ACME DNS-01 challenges.
@@ -19,51 +18,17 @@ The role manages only the acme-dns server. Parent-zone delegation records
 (NS/glue) and client `_acme-challenge` CNAMEs are outside its scope; see
 [DNS Delegation](#dns-delegation).
 
-## Required Variables
-
-- `acme_dns_zone` - DNS zone served by this instance and the name used for its
-  API certificate, e.g. `auth.acme-dns.example.com` (trailing dot accepted)
-- `acme_dns_nsname` - nameserver hostname the zone is delegated to, e.g.
-  `ns1.acme-dns.example.com` (trailing dot accepted)
-- `acme_dns_server_ip` - public IPv4 address used in the rendered A records
-- `acme_dns_nsadmin` - admin email with `@` replaced by `.`
-
-`acme_dns_nsname` has no default on purpose. It is a separate name from the
-zone and needs its own address record in the parent zone. Defaulting it to
-`acme_dns_zone` would hide that requirement and turn a separate-nameserver
-setup into a self-delegation.
-
-## Common Variables
-
-| Variable | Default | Description |
-| --- | --- | --- |
-| `acme_dns_api_tls` | `letsencrypt` | `none`, `letsencrypt`, or `letsencryptstaging` |
-| `acme_dns_listen` | `0.0.0.0:53` | DNS listen address |
-| `acme_dns_protocol` | `both` | DNS protocol (`both4`, `udp6`, ...) |
-| `acme_dns_api_ip` | `0.0.0.0` | API listen IP |
-| `acme_dns_api_port` | `6443` | API listen port |
-| `acme_dns_api_corsorigins` | `[]` | API CORS allowed origins |
-| `acme_dns_db_engine` | `sqlite` | `sqlite` or `postgres` (upstream v2.0+) |
-| `acme_dns_db_connection` | `acme-dns.db` | Database connection string |
-| `acme_dns_loglevel` / `acme_dns_logformat` | `info` / `json` | Log level and format |
-| `acme_dns_logtype` / `acme_dns_logfile` | `stdout` / `./acme-dns.log` | Log destination and file path (`logfile` is used when `logtype: file`) |
-| `acme_dns_debug` | `false` | Enable acme-dns debug messages |
-| `acme_dns_api_acme_cache_dir` | `acme` | Cache directory for the API certificate (Let's Encrypt TLS modes) |
-| `acme_dns_api_notification_email` | empty | Optional Let's Encrypt expiry notification address |
-| `acme_dns_api_disable_registration` | `false` | Disable the `/register` API endpoint |
-| `acme_dns_api_use_header` / `acme_dns_api_header_name` | `false` / `X-Forwarded-For` | Read the client IP from a reverse-proxy header |
-| `acme_dns_user` / `acme_dns_group` | `acme-dns` / `acme-dns` | Service user and group |
-| `acme_dns_home_dir` / `acme_dns_config_dir` | `/var/lib/acme-dns` / `/etc/acme-dns` | Data and config directories (derived from `acme_dns_user`) |
-| `acme_dns_install_dir` | `/usr/local/bin` | Binary install directory |
-| `acme_dns_go_build_repo_version` / `acme_dns_go_build_goarch` / `acme_dns_go_build_base_dir` | see defaults | Build overrides passed to `go_build` |
-
-The upstream repository URL, package path, static mode, target OS, and the
-systemd service/unit names are internal constants in `vars/main.yml`.
+## Naming
 
 `acme_dns_zone` maps to acme-dns's `general.domain`. It is the zone that holds
 the `_acme-challenge` TXT records and, with `acme_dns_api_tls: letsencrypt`,
 the hostname for which acme-dns obtains its own API certificate. It is not the
 deprecated `[api] api_domain` option.
+
+`acme_dns_nsname` has no default on purpose. It is a separate name from the
+zone and needs its own address record in the parent zone. Defaulting it to
+`acme_dns_zone` would hide that requirement and turn a separate-nameserver
+setup into a self-delegation.
 
 ## DNS Delegation
 

@@ -1,8 +1,7 @@
 # acme_dns_register
 
-> The canonical variable reference for this role is
-> [`meta/argument_specs.yml`](meta/argument_specs.yml). This README keeps the
-> narrative and deployed-artifact details; update both when the contract changes.
+> The canonical variable reference is generated from
+> [`meta/argument_specs.yml`](meta/argument_specs.yml) in the collection documentation.
 
 Registers one [acme-dns](https://github.com/joohoi/acme-dns) account per
 **validation domain**, persists the resulting domain -> account mapping to a
@@ -26,11 +25,11 @@ account.
 
 ## Behavior
 
-1. Normalizes `acme_dns_register_acme_domains` by stripping leading `*.` and
+1. Normalizes the requested ACME domains by stripping leading `*.` and
    deduplicating the result.
-2. Reuses accounts from `acme_dns_register_accounts` and the persisted
-   registry in `<credentials_dir>/acme_dns_credentials.yaml`; registers missing
-   domains with `POST /register`.
+2. Reuses accounts from the role inputs and the persisted registry in
+   `<credentials_dir>/acme_dns_credentials.yaml`; registers missing domains
+   with `POST /register`.
 3. Persists the complete registry to
    `<credentials_dir>/acme_dns_credentials.yaml` (mode `0600`):
 
@@ -58,19 +57,7 @@ account.
 Wildcard identifiers use the same `_acme-challenge.<base>` record as the base
 domain; the two values coexist in the same account's two TXT slots.
 
-## Variables
-
-| Variable | Default | Description |
-| --- | --- | --- |
-| `acme_dns_register_server_url` | empty | **(required when registering)** acme-dns server URL |
-| `acme_dns_register_accounts` | `{}` | Existing domain -> account mapping |
-| `acme_dns_register_acme_domains` | `[]` | ACME identifiers needing accounts/CNAMEs |
-| `acme_dns_register_cloudflare_api_token` | empty | Cloudflare account token |
-| `acme_dns_register_cloudflare_zone_token` | empty | Zone-scoped token (preferred) |
-| `acme_dns_register_cloudflare_zone` | empty | Global Cloudflare zone fallback |
-| `acme_dns_register_cloudflare_zones` | `{}` | Per-validation-domain Cloudflare zone overrides |
-| `acme_dns_register_manual_prompt` | `true` | Pause for manual CNAME creation after a fresh registration |
-| `acme_dns_register_credentials_dir` | `{{ playbook_dir }}/host_vars/{{ inventory_hostname }}` | Account registry output directory |
+## Cloudflare zones
 
 The Cloudflare zone for a domain is selected in this order:
 
@@ -106,15 +93,14 @@ the role, so the input-named facts cannot be relied on for the result. Read the
   directory, but the role also includes the file explicitly (under a private
   variable): callers pass the role inputs as `include_role` `vars:` (role
   parameters), which outrank auto-loaded host_vars, so relying on auto-loading
-  alone would re-register already persisted domains. A custom
-  `acme_dns_register_credentials_dir` uses the same include path.
+  alone would re-register already persisted domains. A custom credentials
+  directory uses the same include path.
 - With a Cloudflare token, CNAME records are reconciled on every run, so
   adding a validation domain later only requires re-running the role.
 - Without a Cloudflare token, the manual prompt is unsuitable for
-  non-interactive runs; create the CNAMEs by another mechanism and set
-  `acme_dns_register_manual_prompt: false`.
-- The role is additive: removing a validation domain from
-  `acme_dns_register_acme_domains` does not delete its persisted account or
-  Cloudflare CNAME. Remove those deliberately after the dependent certificates
-  no longer renew.
+  non-interactive runs; create the CNAMEs by another mechanism and disable the
+  prompt.
+- The role is additive: removing a validation domain from the requested list
+  does not delete its persisted account or Cloudflare CNAME. Remove those
+  deliberately after the dependent certificates no longer renew.
 - Credential handling is marked `no_log`; keep `-v` runs out of shared logs.
