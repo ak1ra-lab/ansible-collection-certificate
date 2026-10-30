@@ -22,6 +22,13 @@ canonical variable contracts; the role READMEs keep narrative and deployed
 artifact details. The docs site renders the argument specs as the role
 reference.
 
+## Playbooks
+
+This collection is a role library and does not ship runnable playbooks or
+scripts. The operational certificate playbooks live in
+[`ansible-playbooks-services`](https://github.com/ak1ra-lab/ansible-playbooks-services).
+Use that repository for inventories and site playbooks that apply these roles.
+
 ## Requirements
 
 - Controller: `ansible-core >= 2.19.0`; tested with ansible-core 2.19, 2.20,

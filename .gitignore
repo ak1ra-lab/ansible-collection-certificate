@@ -356,10 +356,6 @@ inventory/*.yml
 inventory/*.yaml
 !inventory/hosts.example.yml
 !inventory/hosts.example.yaml
-playbooks/host_vars/
-playbooks/group_vars/
-playbooks/scripts/
-playbooks/templates/
 extensions/molecule/**/host_vars/
 
 # Local configuration, credentials, and examples

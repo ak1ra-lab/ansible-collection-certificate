@@ -1,10 +1,12 @@
 # AGENTS.md
 
 This repo **is** the `ak1ra_lab.certificate` Ansible collection (`galaxy.yml`
-namespace/name), not a consumer of it. Content: reusable certificate lifecycle
-roles under `roles/` (`acme_dns`, `acme_dns_register`, `certbot`,
-`cert_manager`). There are no collection-owned Python plugins or modules yet;
-the roles delegate generic build helpers to `ak1ra_lab.general`
+namespace/name), not a consumer of it. It is a library repository: reusable
+certificate lifecycle roles under `roles/` (`acme_dns`, `acme_dns_register`,
+`certbot`, `cert_manager`), plus docs, tests, changelog, and release metadata.
+The collection ships no operational playbooks or scripts; those live in
+`ansible-playbooks-services`. There are no collection-owned Python plugins or
+modules yet; the roles delegate generic build helpers to `ak1ra_lab.general`
 (`go_build`, `pyproject_install`, `github_releases_info`).
 See `README.md` for the consume/deploy workflow and `CONTRIBUTING.md` for the
 human contributor workflow.
@@ -30,7 +32,7 @@ human contributor workflow.
 `collections_path=./.ansible/collections` and does not reach user-level or
 parent paths. The certificate roles reference `ak1ra_lab.general` helpers, so
 install the collection and its Galaxy dependencies into the project-local path
-before linting or running playbooks:
+before linting or building the docs:
 
 ```shell
 just ansible-collection-install
@@ -85,10 +87,11 @@ Molecule caches scenario state, so a changed `molecule.yml` needs
 ## Packaging
 
 `galaxy.yml` uses `build_ignore` (not `manifest`). Keep local state out of the
-artifact: `.agents`, `.ansible`, `.venv`, `site`, `tests/output`,
-`playbooks/host_vars`, `playbooks/group_vars`, `config`, plus repository-only
-tooling (`.github`, `.pre-commit-config.yaml`, `ansible.cfg`, `pyproject.toml`,
-`ruff.toml`, `importer_result.json`). `requirements.yml` stays because
+artifact: `.agents`, `.ansible`, `.venv`, `site`, `tests/output`, `config`, plus
+repository-only tooling (`.github`, `.pre-commit-config.yaml`, `ansible.cfg`,
+`pyproject.toml`, `ruff.toml`, `importer_result.json`). Operational playbooks
+live in `ansible-playbooks-services`; do not add playbooks or scripts here or
+ship them in the artifact. `requirements.yml` stays because
 `meta/execution-environment.yml` references it. `meta/runtime.yml`,
 `README.md`, `LICENSE`, `CODE_OF_CONDUCT.md`, and `CHANGELOG.rst` must remain
 in the tarball; CI checks them after `ansible-galaxy collection build` and runs

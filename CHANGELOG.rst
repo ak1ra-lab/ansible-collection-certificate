@@ -32,5 +32,6 @@ Minor Changes
 - Isolated the Molecule scenarios so each one owns its containers and the shared lifecycle and ``shared_state`` are gone.
 - Migrated release notes to antsibull-changelog. ``CHANGELOG.rst`` is the canonical generated changelog.
 - Moved the ``acme-dns.yaml`` and ``certbot.yaml`` playbooks and the role documentation to this collection. Certificate issuance is no longer orchestrated from ``ak1ra_lab.network.mihomo_server``; consumer playbooks compose the two collections explicitly.
+- Moved the operational certificate playbooks to the separate ``ansible-playbooks-services`` repository. The collection remains the certificate role library and ships no playbooks or scripts.
 - Prepared the collection for Galaxy with GPL-3.0-or-later licensing, ``meta/runtime.yml`` (ansible-core >= 2.19.0), ``requirements.txt``/``meta/execution-environment.yml``, a ``build_ignore`` artifact and a build-import CI gate that checks the tarball and runs ``galaxy-importer``.
 - The collection, its roles and its Python sources are licensed under GPL-3.0-or-later. ``galaxy.yml`` and the role metadata declare that license.

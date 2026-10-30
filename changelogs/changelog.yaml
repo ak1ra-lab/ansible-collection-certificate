@@ -30,6 +30,9 @@ releases:
         and runs ``galaxy-importer``.
       - The collection, its roles and its Python sources are licensed under GPL-3.0-or-later.
         ``galaxy.yml`` and the role metadata declare that license.
+      - Moved the operational certificate playbooks to the separate ``ansible-playbooks-services``
+        repository. The collection remains the certificate role library and ships
+        no playbooks or scripts.
       release_summary: 'Initial Galaxy release of the certificate lifecycle collection.
         It contains
 

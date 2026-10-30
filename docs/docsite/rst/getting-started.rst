@@ -57,5 +57,6 @@ Next steps
 ----------
 
 - :doc:`architecture` for how the roles compose.
-- :doc:`playbooks` for the bundled entry points.
+- :doc:`playbooks` for the operational playbooks in
+  ``ansible-playbooks-services``.
 - :doc:`collection_index` for the generated role reference.

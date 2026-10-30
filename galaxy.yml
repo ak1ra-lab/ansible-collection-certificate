@@ -51,8 +51,6 @@ build_ignore:
   - collections
   - config
   - importer_result.json
-  - playbooks/group_vars
-  - playbooks/host_vars
   - pyproject.toml
   - ruff.toml
   - site
