@@ -30,7 +30,7 @@
     - name: parse the registry
       ansible.builtin.set_fact:
         _acme_dns_register_registry_data: >-
-          {{ _acme_dns_register_registry_content.content | b64decode | from_yaml }}
+          {{ _acme_dns_register_registry_content.content | ansible.builtin.b64decode | ansible.builtin.from_yaml }}
 
     - name: assert the registry has one account per validation domain
       ansible.builtin.assert:
@@ -54,8 +54,8 @@
     - name: parse the fake acme-dns requests
       ansible.builtin.set_fact:
         _acme_dns_register_parsed: >-
-          {{ (_acme_dns_register_requests.content | b64decode).splitlines()
-             | map('from_json') | list }}
+          {{ (_acme_dns_register_requests.content | ansible.builtin.b64decode).splitlines()
+             | map('ansible.builtin.from_json') | list }}
 
     - name: assert only two registrations happened across converge and idempotence
       ansible.builtin.assert:

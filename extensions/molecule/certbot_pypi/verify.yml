@@ -31,7 +31,7 @@
     - name: assert the virtualenv certbot runs
       ansible.builtin.assert:
         that:
-          - _certbot_verify_version.stdout is search('^certbot ')
+          - _certbot_verify_version.stdout is ansible.builtin.search('^certbot ')
         fail_msg: >-
           unexpected certbot version output:
           {{ _certbot_verify_version.stdout }} {{ _certbot_verify_version.stderr }}
@@ -75,7 +75,7 @@
     - name: assert the credentials content
       ansible.builtin.assert:
         that:
-          - "'dns_cloudflare_api_token = molecule-cloudflare-token' in (_certbot_verify_credentials_content.content | b64decode)"
+          - "'dns_cloudflare_api_token = molecule-cloudflare-token' in (_certbot_verify_credentials_content.content | ansible.builtin.b64decode)"
         fail_msg: "the Cloudflare API token was not rendered"
         quiet: true
 
@@ -94,7 +94,7 @@
         that:
           - _certbot_verify_hook.stat.exists
           - _certbot_verify_hook.stat.executable
-          - "'systemctl reload nginx' in (_certbot_verify_hook_content.content | b64decode)"
+          - "'systemctl reload nginx' in (_certbot_verify_hook_content.content | ansible.builtin.b64decode)"
         fail_msg: "the deploy renewal hook was not rendered"
         quiet: true
 
@@ -106,9 +106,9 @@
     - name: assert the managed unit uses the virtualenv certbot
       ansible.builtin.assert:
         that:
-          - "'Managed by ak1ra_lab.certificate.certbot' in (_certbot_verify_unit.content | b64decode)"
-          - "'/var/lib/certbot/venv/bin/certbot' in (_certbot_verify_unit.content | b64decode)"
-          - "'renew --no-random-sleep-on-renew' in (_certbot_verify_unit.content | b64decode)"
+          - "'Managed by ak1ra_lab.certificate.certbot' in (_certbot_verify_unit.content | ansible.builtin.b64decode)"
+          - "'/var/lib/certbot/venv/bin/certbot' in (_certbot_verify_unit.content | ansible.builtin.b64decode)"
+          - "'renew --no-random-sleep-on-renew' in (_certbot_verify_unit.content | ansible.builtin.b64decode)"
         fail_msg: "certbot.service does not use the virtualenv binary"
         quiet: true
 

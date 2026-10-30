@@ -80,7 +80,7 @@
                          is ansible.builtin.match('^[a-z0-9]([-a-z0-9]*[a-z0-9])?$'))))
       - >-
         issuer.keys() | list
-        | difference(['name', 'server', 'email', 'profile',
+        | ansible.builtin.difference(['name', 'server', 'email', 'profile',
                       'private_key_secret_name', 'solver', 'eab']) | length == 0
     fail_msg: >-
       every ClusterIssuer ({{ issuer.name | default('#' ~ issuer_index) }})
@@ -116,7 +116,7 @@
   ansible.builtin.assert:
     that:
       - issuer.solver | length == 1
-      - issuer.solver.keys() | list | difference(['cloudflare', 'http01']) | length == 0
+      - issuer.solver.keys() | list | ansible.builtin.difference(['cloudflare', 'http01']) | length == 0
     fail_msg: >-
       every ClusterIssuer ({{ issuer.name }}) needs exactly one solver:
       cloudflare or http01.
@@ -152,7 +152,7 @@
         (issuer.solver.cloudflare.secret_name | default(issuer.name ~ '-cloudflare', true)) | length <= 63
       - >-
         issuer.solver.cloudflare.keys() | list
-        | difference(['api_token', 'secret_name', 'dns_zones']) | length == 0
+        | ansible.builtin.difference(['api_token', 'secret_name', 'dns_zones']) | length == 0
     fail_msg: >-
       the Cloudflare solver for {{ issuer.name }} needs api_token or
       secret_name, dns_zones must be a list of strings, and the Secret name
@@ -172,7 +172,7 @@
   ansible.builtin.assert:
     that:
       - issuer.solver.http01.ingress_class is not defined or issuer.solver.http01.ingress_class is string
-      - issuer.solver.http01.keys() | list | difference(['ingress_class']) | length == 0
+      - issuer.solver.http01.keys() | list | ansible.builtin.difference(['ingress_class']) | length == 0
     fail_msg: >-
       the HTTP-01 solver for {{ issuer.name }} supports only the optional
       ingress_class key.
@@ -210,7 +210,7 @@
         (issuer.eab.secret_name | default(issuer.name ~ '-eab', true)) | length <= 63
       - >-
         issuer.eab.keys() | list
-        | difference(['key_id', 'hmac_key', 'secret_name']) | length == 0
+        | ansible.builtin.difference(['key_id', 'hmac_key', 'secret_name']) | length == 0
     fail_msg: >-
       eab for {{ issuer.name }} needs key_id and either hmac_key (the
       CA-provided base64url key, at least 32 bytes / 43 characters for HS256)
@@ -280,7 +280,7 @@
          or (_cert_manager_secret_entries[item.name] is defined
              and _cert_manager_secret_entries[item.name] != item) }}
     _cert_manager_secret_entries: >-
-      {{ _cert_manager_secret_entries | combine({item.name: item}) }}
+      {{ _cert_manager_secret_entries | ansible.builtin.combine({item.name: item}) }}
   loop: "{{ _cert_manager_managed_secrets }}"
   loop_control:
     label: "{{ item.name }}"
@@ -316,7 +316,7 @@
     that:
       - >-
         _cert_manager_managed_secrets | map(attribute='name') | list
-        | difference(_cert_manager_account_key_names) | length
+        | ansible.builtin.difference(_cert_manager_account_key_names) | length
         == _cert_manager_managed_secrets | length
     fail_msg: >-
       a private_key_secret_name collides with a managed solver or EAB Secret;

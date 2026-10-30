@@ -27,8 +27,8 @@
     - name: assert both global and per-cert hooks ran
       ansible.builtin.assert:
         that:
-          - "'global' in (_certbot_verify_hook_log.content | b64decode)"
-          - "'per-cert' in (_certbot_verify_hook_log.content | b64decode)"
+          - "'global' in (_certbot_verify_hook_log.content | ansible.builtin.b64decode)"
+          - "'per-cert' in (_certbot_verify_hook_log.content | ansible.builtin.b64decode)"
         fail_msg: "the global and per-certificate hooks did not both run"
         quiet: true
 
@@ -52,7 +52,7 @@
     - name: assert only the global hook ran for an unrelated lineage
       ansible.builtin.assert:
         that:
-          - "'global' in (_certbot_verify_hook_log_unrelated.content | b64decode)"
-          - "'per-cert' not in (_certbot_verify_hook_log_unrelated.content | b64decode)"
+          - "'global' in (_certbot_verify_hook_log_unrelated.content | ansible.builtin.b64decode)"
+          - "'per-cert' not in (_certbot_verify_hook_log_unrelated.content | ansible.builtin.b64decode)"
         fail_msg: "the per-certificate hook ran for an unrelated lineage"
         quiet: true

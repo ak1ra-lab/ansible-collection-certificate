@@ -54,7 +54,7 @@
       ansible.builtin.set_fact:
         _cert_manager_by_name: >-
           {{ _cert_manager_by_name | default({})
-             | combine({item.item: (item.content | b64decode | from_yaml)}) }}
+             | ansible.builtin.combine({item.item: (item.content | ansible.builtin.b64decode | ansible.builtin.from_yaml)}) }}
       loop: "{{ _cert_manager_read.results }}"
       loop_control:
         label: "{{ item.item }}"
@@ -67,7 +67,7 @@
           - _cert_manager_by_name['secret-cloudflare-main.yaml'].metadata.namespace == 'cert-manager'
           - >-
             _cert_manager_by_name['secret-cloudflare-main.yaml'].data['api-token']
-            == ('molecule-cloudflare-token' | b64encode)
+            == ('molecule-cloudflare-token' | ansible.builtin.b64encode)
         fail_msg: "the shared Cloudflare API token secret is wrong"
         quiet: true
 
@@ -77,7 +77,7 @@
           - _cert_manager_by_name['secret-zerossl-eab.yaml'].kind == 'Secret'
           - >-
             _cert_manager_by_name['secret-zerossl-eab.yaml'].data['secret']
-            == ('bW9sZWN1bGUtZWFiLWhtYWMta2V5LTAxMjM0NTY3ODk' | b64encode)
+            == ('bW9sZWN1bGUtZWFiLWhtYWMta2V5LTAxMjM0NTY3ODk' | ansible.builtin.b64encode)
         fail_msg: "the external account binding secret is wrong"
         quiet: true
 

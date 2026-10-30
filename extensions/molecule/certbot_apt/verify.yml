@@ -74,11 +74,11 @@
     - name: assert the renewal configuration records the challenge and server
       ansible.builtin.assert:
         that:
-          - "'authenticator = standalone' in (_certbot_verify_renewal.content | b64decode)"
-          - "'server = https://localhost:14000/dir' in (_certbot_verify_renewal.content | b64decode)"
+          - "'authenticator = standalone' in (_certbot_verify_renewal.content | ansible.builtin.b64decode)"
+          - "'server = https://localhost:14000/dir' in (_certbot_verify_renewal.content | ansible.builtin.b64decode)"
         fail_msg: >-
           unexpected renewal configuration:
-          {{ _certbot_verify_renewal.content | b64decode }}
+          {{ _certbot_verify_renewal.content | ansible.builtin.b64decode }}
         quiet: true
 
     - name: collect the deploy renewal hook
@@ -96,10 +96,10 @@
         that:
           - _certbot_verify_hook.stat.exists
           - _certbot_verify_hook.stat.executable
-          - "'echo global' in (_certbot_verify_hook_content.content | b64decode)"
-          - "'echo per-cert' in (_certbot_verify_hook_content.content | b64decode)"
-          - "'/etc/letsencrypt/live/molecule-certbot.test' in (_certbot_verify_hook_content.content | b64decode)"
-          - "'RENEWED_LINEAGE' in (_certbot_verify_hook_content.content | b64decode)"
+          - "'echo global' in (_certbot_verify_hook_content.content | ansible.builtin.b64decode)"
+          - "'echo per-cert' in (_certbot_verify_hook_content.content | ansible.builtin.b64decode)"
+          - "'/etc/letsencrypt/live/molecule-certbot.test' in (_certbot_verify_hook_content.content | ansible.builtin.b64decode)"
+          - "'RENEWED_LINEAGE' in (_certbot_verify_hook_content.content | ansible.builtin.b64decode)"
         fail_msg: "the deploy renewal hook was not rendered correctly"
         quiet: true
 
@@ -133,9 +133,9 @@
     - name: assert the role-managed apt unit is in use
       ansible.builtin.assert:
         that:
-          - "'Managed by ak1ra_lab.certificate.certbot' in (_certbot_verify_unit.content | b64decode)"
-          - "'/usr/bin/certbot' in (_certbot_verify_unit.content | b64decode)"
-          - "'renew --no-random-sleep-on-renew' in (_certbot_verify_unit.content | b64decode)"
+          - "'Managed by ak1ra_lab.certificate.certbot' in (_certbot_verify_unit.content | ansible.builtin.b64decode)"
+          - "'/usr/bin/certbot' in (_certbot_verify_unit.content | ansible.builtin.b64decode)"
+          - "'renew --no-random-sleep-on-renew' in (_certbot_verify_unit.content | ansible.builtin.b64decode)"
         fail_msg: "the role-managed certbot.service was not rendered for apt"
         quiet: true
 

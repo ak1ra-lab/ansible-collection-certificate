@@ -37,7 +37,7 @@
 
     - name: parse the acme-dns account registry
       ansible.builtin.set_fact:
-        _certbot_storage_data: "{{ _certbot_storage_content.content | b64decode | from_json }}"
+        _certbot_storage_data: "{{ _certbot_storage_content.content | ansible.builtin.b64decode | ansible.builtin.from_json }}"
 
     - name: assert the registry contains one account per validation domain
       ansible.builtin.assert:

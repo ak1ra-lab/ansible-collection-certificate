@@ -40,8 +40,8 @@
     - name: parse the fake acme-dns requests
       ansible.builtin.set_fact:
         _certbot_acmedns_parsed: >-
-          {{ (_certbot_acmedns_requests.content | b64decode).splitlines()
-             | map('from_json') | list }}
+          {{ (_certbot_acmedns_requests.content | ansible.builtin.b64decode).splitlines()
+             | map('ansible.builtin.from_json') | list }}
 
     - name: assert each domain selected the expected account
       ansible.builtin.assert:

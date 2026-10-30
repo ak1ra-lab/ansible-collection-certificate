@@ -65,7 +65,7 @@
         - item.content is defined
         - >-
           'Managed by ak1ra_lab.certificate.certbot'
-          in (item.content | b64decode)
+          in (item.content | ansible.builtin.b64decode)
       ansible.builtin.file:
         path: "{{ item.item.path }}"
         state: absent

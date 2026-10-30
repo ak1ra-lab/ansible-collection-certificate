@@ -124,7 +124,7 @@
 
 - name: ensure the acme-dns storage directory exists
   ansible.builtin.file:
-    path: "{{ certbot_acmedns_storage_path | dirname }}"
+    path: "{{ certbot_acmedns_storage_path | ansible.builtin.dirname }}"
     state: directory
     owner: root
     group: root
