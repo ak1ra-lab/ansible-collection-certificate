@@ -10,6 +10,7 @@ during a release. These tests run in the standard tox-ansible unit env.
 
 from __future__ import annotations
 
+import re
 from pathlib import Path
 
 import yaml
@@ -26,7 +27,9 @@ def test_galaxy_metadata() -> None:
 
     assert galaxy["namespace"] == "ak1ra_lab"
     assert galaxy["name"] == "certificate"
-    assert galaxy["version"] == "0.1.0"
+    # The release tag is checked against galaxy.yml by the release workflow;
+    # do not duplicate the current release number here.
+    assert re.fullmatch(r"\d+\.\d+\.\d+", galaxy["version"])
     assert galaxy["license"] == ["GPL-3.0-or-later"]
     assert galaxy["dependencies"] == {
         "ak1ra_lab.general": ">=0.4.0",

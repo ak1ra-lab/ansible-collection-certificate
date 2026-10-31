@@ -1,0 +1,4 @@
+---
+minor_changes:
+  - The collection metadata unit test no longer pins the current release
+    version; it only checks the semantic version format.
