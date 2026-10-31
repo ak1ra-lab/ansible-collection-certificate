@@ -1,0 +1,4 @@
+---
+bugfixes:
+  - Excluded ``AGENTS.md``, ``justfile`` and the generated ``dist`` directory
+    from the Galaxy artifact.
