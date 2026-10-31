@@ -21,10 +21,15 @@ Common commands
    just docs-lint     # antsibull-docs lint-collection-docs
    just docs-build    # regenerate reference pages and build Sphinx
 
-``just ansible-collection-install`` installs the collection and its Galaxy
-dependencies into the project-local collections path before lint, mypy, or
-docs. Molecule installs the collection under test and its test requirements
-itself.
+``just ansible-collection-install`` installs the collection, its Galaxy
+dependencies, and the shared test-only collections into the project-local
+collections path before lint, mypy, or docs. Molecule installs the collection
+under test and its test requirements itself.
+
+When the sibling ``ak1ra_lab.general`` checkout is not published yet, run
+``just collections-install-local`` to overlay it into ``.ansible/collections``
+for local lint, mypy, docs, and Molecule. tox-ansible and CI resolve the
+published general from Galaxy.
 
 Documentation sources
 ---------------------

@@ -10,9 +10,21 @@ just sync
 just ansible-collection-install
 ```
 
-`just ansible-collection-install` installs the collection and its Galaxy
-dependencies, including `ak1ra_lab.general`, into `.ansible/collections` so
-lint, mypy, and docs resolve them.
+`just ansible-collection-install` installs the collection, its Galaxy
+dependencies including `ak1ra_lab.general`, and the shared test-only
+collections into `.ansible/collections` so lint, mypy, and docs resolve them.
+
+When the sibling `ak1ra_lab.general` checkout is not published yet, overlay it
+for local work with:
+
+```shell
+just collections-install-local
+# or
+GENERAL_COLLECTION=/path/to/ansible-collection-general just collections-install-local
+```
+
+The overlay is local-only. `ansible-lint`, mypy, docs, and Molecule use it;
+tox-ansible and CI resolve the published general from Galaxy.
 
 The repository's `ansible.cfg` pins `roles_path=./roles` and
 `collections_path=./.ansible/collections`; it does not read user-level or
@@ -37,7 +49,10 @@ uv run python -m galaxy_importer.main \
 `ansible-test sanity` is the authoritative Python/Ansible gate and runs
 through tox-ansible. `[tool.tox]`/`[tool.tox-ansible]` in `pyproject.toml`
 define the ansible-core 2.19/2.20/2.21 plus weekly devel/milestone matrix;
-there is no hand-maintained skip list.
+there is no hand-maintained skip list. The tox environments install the
+`galaxy.yml` dependencies, including `ak1ra_lab.general`, from Galaxy. To test
+against an unpublished general change, use the local overlay for lint, mypy,
+docs, and Molecule; tox-ansible and CI require the published general.
 
 Python changes must pass ruff, ruff format and mypy. Ansible changes must pass
 ansible-lint, `ansible-test sanity` and the relevant Molecule scenarios.
@@ -65,17 +80,19 @@ The managed nodes are the Debian 12/13 systemd images from
 
 ```shell
 just sync
-just ansible-collection-install   # lint/mypy/docs only, not Molecule
+just ansible-collection-install   # lint/mypy/docs; Molecule uses its own copy
 just molecule-test                # every scenario
 just molecule-test-one certbot_pypi
 just molecule-syntax
 just molecule-list
 ```
 
-Molecule's dependency action installs `tests/molecule/requirements.yml`;
+Molecule's dependency action installs `tests/requirements.yml`;
 ansible-compat's prerun installs the collection under test and its `galaxy.yml`
-dependencies, including `ak1ra_lab.general`, from Galaxy. Do not pre-install
-the collection or test collections into `.ansible/collections` for Molecule.
+dependencies. When developing against an unpublished general checkout, run
+`just collections-install-local` first; the `just molecule-*` recipes keep
+Ansible data under the repository's `.ansible/` directory. CI resolves general
+from Galaxy.
 
 Podman is required. Rootless Podman works for the certificate scenarios; CI
 uses rootful Podman for a uniform systemd container runtime. A Docker daemon

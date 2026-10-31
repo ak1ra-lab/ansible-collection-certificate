@@ -65,9 +65,14 @@ hand.
 - Docs and changelog: `just docs-lint`, `just docs-build`, and
   `just changelog-lint`, using antsibull-docs/antsibull-changelog.
   `CHANGELOG.rst` is generated and must not be edited by hand.
-- `just ansible-collection-install` is for lint, mypy, and docs only; Molecule
-  installs the collection and test requirements itself. Build the artifact and
-  run `galaxy-importer` before release.
+- `just ansible-collection-install` installs the collection, its Galaxy
+  dependencies, and `tests/requirements.yml` for lint, mypy, and docs; Molecule
+  installs its own copy. Use `just collections-install-local` only for local
+  co-development against an unpublished general checkout. Build the artifact
+  and run `galaxy-importer` before release.
+- Runtime collection dependencies belong in `galaxy.yml`. The root
+  `requirements.yml` is only the ansible-builder execution-environment list;
+  test-only collections live in `tests/requirements.yml`.
 
 ## Workflow and safety
 

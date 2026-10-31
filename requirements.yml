@@ -2,8 +2,8 @@
 # Runtime collection dependencies for an ansible-builder execution
 # environment. ak1ra_lab.general is declared in galaxy.yml as well so an
 # execution environment built from this file resolves the same dependency.
-# Test-only collections (containers.podman, community.docker) live in
-# tests/molecule/requirements.yml.
+# Test-only collections shared by ansible-lint and the test harness live in
+# tests/requirements.yml.
 collections:
   - name: ak1ra_lab.general
     version: ">=0.4.0"

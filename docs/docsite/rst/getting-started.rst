@@ -26,8 +26,10 @@ Install into the project-local collections path:
 ``kubernetes.core`` from ``galaxy.yml`` automatically.
 
 For local development, ``just ansible-collection-install`` installs this
-collection and its Galaxy dependencies into ``.ansible/collections`` for lint,
-mypy, and docs.
+collection, its Galaxy dependencies, and the shared test-only collections into
+``.ansible/collections`` for lint, mypy, and docs. When developing against an
+unpublished sibling general checkout, run ``just collections-install-local``
+first; tox-ansible and CI resolve the published general from Galaxy.
 
 Requirements
 ------------
