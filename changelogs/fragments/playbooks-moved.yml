@@ -1,0 +1,5 @@
+---
+minor_changes:
+  - Moved the operational certificate playbooks to the separate
+    ``ansible-playbooks-services`` repository. The collection remains the
+    certificate role library and ships no playbooks or scripts.
