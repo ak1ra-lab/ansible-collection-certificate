@@ -28,10 +28,11 @@ account.
 1. Normalizes the requested ACME domains by stripping leading `*.` and
    deduplicating the result.
 2. Reuses accounts from the role inputs and the persisted registry in
-   `<credentials_dir>/acme_dns_credentials.yaml`; registers missing domains
-   with `POST /register`.
+   `<credentials_dir>/acme_dns_credentials.yml` (falling back to an existing
+   `acme_dns_credentials.yaml` from an earlier version); registers missing
+   domains with `POST /register`.
 3. Persists the complete registry to
-   `<credentials_dir>/acme_dns_credentials.yaml` (mode `0600`):
+   `<credentials_dir>/acme_dns_credentials.yml` (mode `0600`):
 
    ```yaml
    acme_dns_register_server_url: https://auth.example.com

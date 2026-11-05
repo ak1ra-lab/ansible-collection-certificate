@@ -91,7 +91,7 @@
           'acme_dns_register_accounts': _acme_dns_register_accounts
         } | ansible.builtin.to_nice_yaml(indent=2, sort_keys=true)
       }}
-    dest: "{{ _acme_dns_register_output_dir }}/acme_dns_credentials.yaml"
+    dest: "{{ _acme_dns_register_output_dir }}/acme_dns_credentials.yml"
     mode: "0600"
 
 - name: initialize the CNAME list

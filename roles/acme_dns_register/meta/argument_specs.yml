@@ -52,8 +52,9 @@ argument_specs:
         default: []
         required: false
       acme_dns_register_credentials_dir:
-        description: Controller directory where acme_dns_credentials.yaml is persisted. Empty uses {{ playbook_dir }}/host_vars/{{
-          inventory_hostname }}.
+        description: Controller directory where acme_dns_credentials.yml is persisted. An existing
+          acme_dns_credentials.yaml from an earlier version is read as a fallback. Empty uses
+          {{ playbook_dir }}/host_vars/{{ inventory_hostname }}.
         type: str
         default: ''
         required: false

@@ -7,7 +7,7 @@
   gather_facts: false
   vars:
     _acme_dns_register_dir: /tmp/molecule-ak1ra-certificate-acme-dns-register
-    _acme_dns_register_registry: "{{ _acme_dns_register_dir }}/controller/acme_dns_credentials.yaml"
+    _acme_dns_register_registry: "{{ _acme_dns_register_dir }}/controller/acme_dns_credentials.yml"
   tasks:
     - name: collect the registry file
       ansible.builtin.stat:

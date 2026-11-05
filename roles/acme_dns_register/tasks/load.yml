@@ -19,10 +19,27 @@
           or (playbook_dir ~ '/host_vars/' ~ inventory_hostname))
          | ansible.builtin.regex_replace('/+$', '') }}
 
+- name: check the persisted acme-dns account registry paths
+  ansible.builtin.stat:
+    path: "{{ _acme_dns_register_output_dir }}/{{ item }}"
+  loop:
+    - acme_dns_credentials.yml
+    - acme_dns_credentials.yaml
+  register: _acme_dns_register_registry_paths
+
+# Prefer the current .yml name; the .yaml fallback keeps registries written by
+# earlier collection versions usable without re-registering every domain.
+- name: select the persisted acme-dns account registry
+  ansible.builtin.set_fact:
+    _acme_dns_register_registry_file: >-
+      {{ _acme_dns_register_registry_paths.results
+         | selectattr('stat.exists')
+         | map(attribute='stat.path') | first | default('') }}
+
 - name: load the persisted acme-dns account registry
-  when: (_acme_dns_register_output_dir ~ '/acme_dns_credentials.yaml') is ansible.builtin.file
+  when: _acme_dns_register_registry_file | length > 0
   ansible.builtin.include_vars:
-    file: "{{ _acme_dns_register_output_dir }}/acme_dns_credentials.yaml"
+    file: "{{ _acme_dns_register_registry_file }}"
     name: _acme_dns_register_file
 
 - name: resolve the effective server URL and account registry

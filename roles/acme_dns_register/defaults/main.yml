@@ -55,5 +55,7 @@ acme_dns_register_acme_domains: []
 
 # Directory where acme-dns accounts are persisted (on the Ansible controller).
 # Default: {{ playbook_dir }}/host_vars/{{ inventory_hostname }}
-# The file is always named acme_dns_credentials.yaml inside this directory.
+# The file is named acme_dns_credentials.yml inside this directory; an
+# existing acme_dns_credentials.yaml from an earlier version is still read as
+# a fallback.
 acme_dns_register_credentials_dir: ""

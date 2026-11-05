@@ -100,5 +100,5 @@
               password: molecule-key-www
               subdomain: molecule-subdomain-www
               fulldomain: molecule-subdomain-www.auth.example.invalid
-        dest: "{{ _certbot_acmedns_dir }}/controller/acme_dns_credentials.yaml"
+        dest: "{{ _certbot_acmedns_dir }}/controller/acme_dns_credentials.yml"
         mode: "0600"
