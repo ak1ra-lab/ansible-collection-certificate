@@ -1,14 +1,22 @@
 ---
-# Collection CI: lint/typecheck, the tox-ansible sanity and unit matrix, and
-# the Galaxy build-import gate. Molecule stays a separate local/CI workflow
-# and is not part of the Python x ansible-core matrix.
+# Collection CI: lint/typecheck/docs, the tox-ansible sanity and unit matrix,
+# the Galaxy build-import gate, and the Molecule scenarios.
+#
+# Python tooling comes from the uv-managed environment. Each job syncs the
+# dependency group it needs once and then runs tools through `uv run --no-sync`
+# or tox; do not add pip installs here.
+#
+# The Molecule job stays separate and deliberately does not use the full
+# Python x ansible-core matrix. It runs rootful Podman because systemd needs
+# the capabilities. Add repository-specific setup steps below when a scenario
+# needs extra controller tooling (for example Go for go_build).
 name: CI
 
 on:
   pull_request:
-    branches: [master]
   push:
-    branches: [master]
+    branches:
+      - master
   schedule:
     # Weekly devel/milestone coverage (Monday 03:17 UTC).
     - cron: "17 3 * * 1"
@@ -18,48 +26,12 @@ permissions:
   contents: read
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ci-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   lint:
-    name: Lint
-    runs-on: ubuntu-24.04
-    timeout-minutes: 20
-    steps:
-      - name: Check out the repository
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          persist-credentials: false
-      - name: Set up Python
-        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
-        with:
-          python-version: "3.13"
-      - name: Install uv
-        uses: astral-sh/setup-uv@18d369b23da25a81e9458561248e1aafff6a70fa # v10.3.1
-      - name: Sync the lint dependencies
-        run: uv sync --locked --no-dev --group lint
-      - name: Install the collection and test dependencies
-        run: |
-          mkdir -p .ansible/collections
-          uv run --no-sync ansible-galaxy collection install \
-            --force --collections-path .ansible/collections .
-          uv run --no-sync ansible-galaxy collection install \
-            -r tests/requirements.yml --collections-path .ansible/collections
-      - name: Run ansible-lint
-        env:
-          ANSIBLE_HOME: ${{ github.workspace }}/.ansible
-        run: uv run --no-sync ansible-lint
-      - name: Run ruff and mypy
-        run: |
-          uv run --no-sync ruff check .
-          uv run --no-sync ruff format --check .
-          uv run --no-sync mypy tests/
-      - name: Lint the changelog fragments
-        run: uv run --no-sync antsibull-changelog lint
-
-  docs:
-    name: Docs
+    name: Lint and docs
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     steps:
@@ -75,17 +47,32 @@ jobs:
         uses: astral-sh/setup-uv@18d369b23da25a81e9458561248e1aafff6a70fa # v10.3.1
       - name: Sync the lint and docs dependencies
         run: uv sync --locked --no-dev --group lint --group docs
-      - name: Install the collection and its dependencies
+      - name: Install the collection and test dependencies
         run: |
           mkdir -p .ansible/collections
           uv run --no-sync ansible-galaxy collection install \
             --force --collections-path .ansible/collections .
+          uv run --no-sync ansible-galaxy collection install \
+            -r tests/requirements.yml --collections-path .ansible/collections
+      - name: Run ansible-lint
+        env:
+          ANSIBLE_HOME: ${{ github.workspace }}/.ansible
+        run: uv run --no-sync ansible-lint
+      - name: Run ruff
+        run: |
+          uv run --no-sync ruff check tests/
+          uv run --no-sync ruff format --check tests/
+      - name: Run mypy
+        run: uv run --no-sync mypy tests/
+      - name: Lint the changelog fragments
+        run: uv run --no-sync antsibull-changelog lint
       - name: Lint collection documentation
         env:
           ANSIBLE_COLLECTIONS_PATH: ${{ github.workspace }}/.ansible/collections
         run: >-
-          uv run --no-sync antsibull-docs lint-collection-docs
-          --plugin-docs --validate-collection-refs self .
+          uv run --no-sync antsibull-docs
+          --config-file docs/docsite/antsibull-docs.cfg
+          lint-collection-docs --plugin-docs --validate-collection-refs self .
       - name: Build the Sphinx documentation site
         env:
           ANSIBLE_COLLECTIONS_PATH: ${{ github.workspace }}/.ansible/collections
@@ -253,6 +240,8 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y podman
+      # Molecule installs the collection under test (ansible-compat prerun)
+      # and tests/requirements.yml (dependency action) itself.
       - name: Run the Molecule scenarios
         run: >-
           sudo env "PATH=${GITHUB_WORKSPACE}/.venv/bin:${PATH}"

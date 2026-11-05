@@ -25,6 +25,7 @@ lint = [
 ]
 test = [
     { include-group = "ansible" },
+    "pytest>=8",
     "tox>=4.2",
     "tox-ansible>=26.10.0",
 ]
