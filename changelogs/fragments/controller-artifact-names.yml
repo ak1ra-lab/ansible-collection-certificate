@@ -1,0 +1,13 @@
+---
+minor_changes:
+  - The ``acme_dns_register`` role now persists the controller-side account
+    registry as ``host_vars/<host>/acme_dns_credentials.yml``. The
+    ``acme_dns_register`` and ``certbot`` roles still read an existing
+    ``acme_dns_credentials.yaml`` from an earlier version as a fallback, so
+    existing registrations are not repeated.
+  - Documentation linting now passes
+    ``docs/docsite/antsibull-docs.cfg`` to antsibull-docs, which disables the
+    default ``~/antsibull.log`` file emitter while keeping warnings on stderr.
+  - The CI, docs, release and Dependabot workflows, the ``just`` recipes,
+    pre-commit hooks, and the editor/YAML formatter scaffolding are aligned
+    with the sibling ``general`` and ``network`` collections.
