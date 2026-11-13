@@ -16,22 +16,20 @@
 # Load explicitly even for the default host_vars directory: the caller may pass
 # the acme_dns_register_* inputs as role parameters, which outrank the
 # automatically loaded host_vars values.
-- name: check the persisted acme-dns account registry paths
-  ansible.builtin.stat:
-    path: "{{ _certbot_acmedns_credentials_dir }}/{{ item }}"
-  loop:
-    - acme_dns_credentials.yml
-    - acme_dns_credentials.yaml
-  register: _certbot_acmedns_registry_paths
-
-# Prefer the current .yml name; the .yaml fallback keeps registries written by
-# earlier collection versions usable without re-registering every domain.
-- name: select the persisted acme-dns account registry
+#
+# The registry is controller-side (playbook_dir or a custom controller
+# directory), so resolve it there.  Prefer the current .yml name; the .yaml
+# fallback keeps registries written by earlier collection versions usable
+# without re-registering every domain.
+- name: resolve the persisted acme-dns account registry
   ansible.builtin.set_fact:
     _certbot_acmedns_registry_file: >-
-      {{ _certbot_acmedns_registry_paths.results
-         | selectattr('stat.exists')
-         | map(attribute='stat.path') | first | default('') }}
+      {{ lookup('ansible.builtin.first_found',
+                {'files': ['acme_dns_credentials.yml',
+                           'acme_dns_credentials.yaml'],
+                 'paths': [_certbot_acmedns_credentials_dir],
+                 'skip': true})
+         | default('', true) }}
 
 - name: load the persisted acme-dns accounts
   when: _certbot_acmedns_registry_file | length > 0

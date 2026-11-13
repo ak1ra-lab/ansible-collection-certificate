@@ -8,8 +8,8 @@ Registers one [acme-dns](https://github.com/joohoi/acme-dns) account per
 host_vars directory, and creates the required `_acme-challenge` CNAME records.
 
 Registration runs on the managed host (it needs access to the acme-dns API).
-The host_vars registry write and the Cloudflare/manual CNAME tasks are
-delegated to the Ansible controller (`delegate_to: localhost`).
+The host_vars registry is read from and written to the Ansible controller, and
+the Cloudflare/manual CNAME tasks also run there (`delegate_to: localhost`).
 
 A validation domain is the ACME identifier with any leading `*.` removed:
 
@@ -30,7 +30,10 @@ account.
 2. Reuses accounts from the role inputs and the persisted registry in
    `<credentials_dir>/acme_dns_credentials.yml` (falling back to an existing
    `acme_dns_credentials.yaml` from an earlier version); registers missing
-   domains with `POST /register`.
+   domains with `POST /register`. When both files exist, the `.yml` registry
+   wins. The `.yaml` name is only a migration fallback for registries written
+   by `ak1ra_lab.general` 0.3.x or certificate 0.1.0; once a run has written
+   `.yml`, the old file is no longer read and can be removed manually.
 3. Persists the complete registry to
    `<credentials_dir>/acme_dns_credentials.yml` (mode `0600`):
 

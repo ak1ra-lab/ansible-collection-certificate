@@ -9,8 +9,8 @@
 # example.com and *.example.com share one account, while www.example.com gets
 # its own account.
 #
-# Registration runs on the managed host; the registry write and CNAME tasks
-# are delegated to the Ansible controller (delegate_to: localhost).
+# Registration runs on the managed host; the registry read/write and CNAME
+# tasks are delegated to the Ansible controller (delegate_to: localhost).
 #
 # Public interface (pass via `vars:` on import_role):
 #   acme_dns_register_server_url             - acme-dns server URL (required)

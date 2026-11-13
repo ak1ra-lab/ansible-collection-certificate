@@ -1,0 +1,8 @@
+---
+bugfixes:
+  - The ``acme_dns_register`` and ``certbot`` roles now check for the persisted
+    ``acme_dns_credentials.yml`` registry on the Ansible controller. The check
+    previously ran on the managed host, so the controller-side registry was
+    never found and ``certbot`` re-registered every acme-dns account on each run
+    with ``certbot_acmedns_register=true``, including runs that only changed
+    how certificate domains were grouped into lineages.

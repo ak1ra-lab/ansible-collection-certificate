@@ -126,7 +126,9 @@ use `_acme-challenge.example.com`; `www.example.com` gets its own account.
 Each acme-dns account has two TXT slots, so the base + wildcard pair fits
 exactly. Accounts can come from the persisted registry written by
 `ak1ra_lab.certificate.acme_dns_register`, from the role's explicit account
-input, or be registered automatically:
+input, or be registered automatically. The registry is read from
+`acme_dns_credentials.yml`; an existing `acme_dns_credentials.yaml` is accepted
+as a migration fallback, and `.yml` wins when both exist:
 
 ```yaml
 certbot_dns_provider: acmedns

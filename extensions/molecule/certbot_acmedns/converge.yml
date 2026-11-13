@@ -16,3 +16,42 @@
     - name: include the certbot role
       ansible.builtin.include_role:
         name: ak1ra_lab.certificate.certbot
+
+# Exercise the inner role on a managed node with an existing controller-side
+# registry.  The registry check must be delegated to localhost; otherwise the
+# role sees no accounts and tries to POST /register for every domain (the fake
+# API answers 200, not the 201 the role expects, so the run fails).
+- name: reuse the persisted acme-dns accounts on a managed node
+  hosts: all
+  gather_facts: false
+  vars:
+    _certbot_acmedns_dir: /tmp/molecule-ak1ra-certificate-certbot-acmedns
+  tasks:
+    - name: include the acme_dns_register role
+      ansible.builtin.include_role:
+        name: ak1ra_lab.certificate.acme_dns_register
+      vars:
+        acme_dns_register_server_url: http://127.0.0.1:8056
+        acme_dns_register_accounts: {}
+        acme_dns_register_acme_domains:
+          - example.com
+          - "*.example.com"
+          - www.example.com
+        acme_dns_register_credentials_dir: "{{ _certbot_acmedns_dir }}/controller"
+        acme_dns_register_manual_prompt: false
+
+    - name: assert the persisted accounts were reused
+      ansible.builtin.assert:
+        that:
+          - acme_dns_register_new_domains | length == 0
+          - acme_dns_register_effective_accounts | length == 2
+          - >-
+            acme_dns_register_effective_accounts['example.com'].subdomain
+            == 'molecule-subdomain-base'
+          - >-
+            acme_dns_register_effective_accounts['www.example.com'].subdomain
+            == 'molecule-subdomain-www'
+        fail_msg: >-
+          the role did not reuse the controller-side registry and would have
+          registered the domains again.
+        quiet: true

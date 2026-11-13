@@ -4,7 +4,8 @@ minor_changes:
     registry as ``host_vars/<host>/acme_dns_credentials.yml``. The
     ``acme_dns_register`` and ``certbot`` roles still read an existing
     ``acme_dns_credentials.yaml`` from an earlier version as a fallback, so
-    existing registrations are not repeated.
+    existing registrations are not repeated; when both files exist, the
+    ``.yml`` registry takes precedence.
   - Documentation linting now passes
     ``docs/docsite/antsibull-docs.cfg`` to antsibull-docs, which disables the
     default ``~/antsibull.log`` file emitter while keeping warnings on stderr.
