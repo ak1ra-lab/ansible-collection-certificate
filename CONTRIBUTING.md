@@ -49,7 +49,10 @@ uv run python -m galaxy_importer.main \
 `ansible-test sanity` is the authoritative Python/Ansible gate and runs
 through tox-ansible. `[tool.tox]`/`[tool.tox-ansible]` in `pyproject.toml`
 define the ansible-core 2.19/2.20/2.21 plus weekly devel/milestone matrix;
-there is no hand-maintained skip list. The tox environments install the
+there is no hand-maintained skip list. `ansible-test` selects
+`tests/sanity/ignore-<major>.<minor>.txt` by the ansible-core version under
+test, so when the devel/milestone job moves to a new minor, copy the current
+ignore file to the new version. The tox environments install the
 `galaxy.yml` dependencies, including `ak1ra_lab.general`, from Galaxy. To test
 against an unpublished general change, use the local overlay for lint, mypy,
 docs, and Molecule; tox-ansible and CI require the published general.
